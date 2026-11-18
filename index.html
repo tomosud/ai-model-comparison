@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI モデル比較</title>
+    <meta name="description" content="OpenRouter のデータで主要 LLM の価格・ベンチマーク・速度を基準モデル比で比べるダッシュボード" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232563eb'/%3E%3Ccircle cx='10' cy='20' r='3' fill='white'/%3E%3Ccircle cx='17' cy='12' r='3' fill='white'/%3E%3Ccircle cx='24' cy='17' r='3' fill='white'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <div class="title-row">
+          <h1>AI モデル比較</h1>
+          <span class="subtitle">価格 × 性能 × 速度を、基準モデル = 1.00× で比べる</span>
+        </div>
+        <p class="meta" id="meta">読み込み中…</p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="banners"></div>
+
+      <section class="filters" aria-label="絞り込み">
+        <fieldset class="f-providers">
+          <legend>メーカー</legend>
+          <div id="providers" class="chips"></div>
+        </fieldset>
+        <div class="f-grid">
+          <label>評価指標
+            <select id="metric"></select>
+          </label>
+          <label>入力トークン
+            <input id="inTok" type="number" min="0" step="1000" inputmode="numeric" />
+          </label>
+          <label>出力トークン
+            <input id="outTok" type="number" min="0" step="1000" inputmode="numeric" />
+          </label>
+          <label>登録時期
+            <select id="age">
+              <option value="6">6 か月以内</option>
+              <option value="12">12 か月以内</option>
+              <option value="24">24 か月以内</option>
+              <option value="0">すべて</option>
+            </select>
+          </label>
+          <label>対象
+            <select id="scope">
+              <option value="main">主要（派生・実験版・画像系を除く）</option>
+              <option value="all">すべて表示</option>
+            </select>
+          </label>
+          <label>最大件数
+            <select id="max">
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="60">60</option>
+              <option value="0">制限なし</option>
+            </select>
+          </label>
+          <label class="f-search">検索
+            <input id="query" type="search" placeholder="モデル名 / ID" />
+          </label>
+        </div>
+      </section>
+
+      <div class="layout">
+        <section class="panel chart-panel" aria-label="価格と性能の散布図">
+          <div class="panel-head">
+            <h2>価格 vs 性能</h2>
+            <div class="toggles">
+              <div class="seg" role="group" aria-label="表示モード">
+                <button type="button" data-mode="abs">絶対値</button>
+                <button type="button" data-mode="rel">基準比</button>
+              </div>
+              <label class="check"><input type="checkbox" id="logX" /> X 対数</label>
+              <label class="check"><input type="checkbox" id="pareto" checked /> パレート線</label>
+            </div>
+          </div>
+          <p class="hint">左上ほど「安くて高スコア」。点をクリックするとそのモデルが基準になります。拡大は Ctrl + ホイールか下のスライダー。</p>
+          <div id="chart" class="chart" role="img" aria-label="モデルごとの想定コストとスコアの散布図"></div>
+          <p class="chart-note" id="chartNote"></p>
+        </section>
+
+        <aside class="side">
+          <section class="panel" id="baseCard" aria-label="基準モデル"></section>
+          <section class="panel" id="detail" aria-label="モデル詳細"></section>
+        </aside>
+      </div>
+
+      <section class="panel table-panel" aria-label="相対比較表">
+        <div class="panel-head">
+          <h2>相対比較表</h2>
+          <div class="toggles">
+            <label class="check"><input type="checkbox" id="pinBase" checked /> 基準行を先頭に</label>
+            <button type="button" id="csv" class="btn">CSV 出力</button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table id="table"></table>
+        </div>
+        <ul class="notes">
+          <li>スコア比は採用した指標の<strong>数値の比</strong>であり、「何倍賢い」という意味ではありません。</li>
+          <li>コスト比は低いほど安い（0.50× = 半額）。速度比は高いほど速い。遅延比は低いほど待ち時間が短い。</li>
+          <li>コスト効率比 = (スコア ÷ 想定コスト) の基準比。無料モデルは効率を定義できないため N/A。</li>
+          <li>想定コストは入力・出力トークン従量のみ。キャッシュ、Web 検索、ツール、画像・音声、長文割増は含みません。</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap" id="footer"></div>
+    </footer>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
