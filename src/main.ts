@@ -899,6 +899,7 @@ async function switchData(d: 'live' | 'sample') {
 }
 
 function bindControls() {
+  $('resetBtn').addEventListener('click', resetView);
   $('providers').addEventListener('change', () => {
     state.providers = [...document.querySelectorAll<HTMLInputElement>('#providers input:checked')].map((i) => i.value);
     recompute();
@@ -995,6 +996,7 @@ function syncInputs() {
   setSel('age', String(state.ageMonths));
   setSel('max', String(state.maxCount));
   $<HTMLSelectElement>('scope').value = state.scope;
+  $<HTMLInputElement>('pinBase').checked = state.pinBase;
   $<HTMLInputElement>('query').value = state.query;
   $<HTMLInputElement>('logX').checked = state.logX;
   $<HTMLInputElement>('pareto').checked = state.pareto;
@@ -1074,6 +1076,23 @@ async function ensureLatestBuild(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// URL を読む前の状態 = 初期表示。「初期状態に戻す」で使う
+const DEFAULT_STATE: State = JSON.parse(JSON.stringify(state));
+
+/** 表示の設定（メーカー・指標・トークン数・表示モードなど）を初期状態に戻す。データ（実データ/サンプル）はそのまま */
+function resetView() {
+  if (!catalog) return;
+  const data = state.data;
+  Object.assign(state, JSON.parse(JSON.stringify(DEFAULT_STATE)), { data });
+  const pre = filterModels(catalog, { providers: MAJOR_PROVIDERS, scope: 'main', ageMonths: 0, query: '', maxCount: 0 });
+  state.metric = defaultMetric(pre);
+  state.base = defaultBase(pre, state.metric)?.id ?? null;
+  lastAxisSig = ''; // 拡大も全体表示に戻す
+  renderProviders();
+  syncInputs();
+  withBusy('初期状態に戻しています…', recompute);
 }
 
 readUrl();

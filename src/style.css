@@ -195,3 +195,5 @@ tr.is-detail td.col-model { box-shadow: inset 3px 0 0 var(--accent), 1px 0 0 var
 @keyframes spin { to { transform: rotate(360deg); } }
 .is-busy .chart, .is-busy .table-scroll, .is-busy #baseCard, .is-busy #detail { opacity: 0.55; transition: opacity 0.08s; }
 .is-busy { cursor: progress; }
+.f-reset { display: flex; align-items: flex-end; }
+.f-reset .btn { width: 100%; padding: 6px 10px; }
