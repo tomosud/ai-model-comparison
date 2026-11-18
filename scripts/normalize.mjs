@@ -127,26 +127,39 @@ export function normalizeBenchmarkResponse(resp) {
   return out;
 }
 
-/** model_permaslug を canonical_slug → id の順で照合。表示名では照合しない */
+/**
+ * model_permaslug を canonical_slug（無ければ id）で照合。表示名では照合しない。
+ * `openai/x` と `openai/x:batch` のように同じ canonical_slug を共有するモデルは
+ * 中身が同じモデル（課金形態だけ違う）なので、全員に同じスコアを付ける。
+ */
 export function attachMetrics(models, records) {
-  const byKey = new Map();
+  const bySlug = new Map();
+  const byId = new Map();
   for (const m of models) {
-    if (m.canonicalSlug) byKey.set(m.canonicalSlug, m);
-    if (!byKey.has(m.id)) byKey.set(m.id, m);
+    if (m.canonicalSlug) {
+      const list = bySlug.get(m.canonicalSlug) ?? [];
+      list.push(m);
+      bySlug.set(m.canonicalSlug, list);
+    }
+    byId.set(m.id, m);
   }
   const unmatched = new Set();
   let matched = 0;
   for (const r of records) {
-    const m = byKey.get(r.modelPermaslug);
-    if (!m) {
+    const targets = bySlug.get(r.modelPermaslug) ?? (byId.has(r.modelPermaslug) ? [byId.get(r.modelPermaslug)] : []);
+    if (!targets.length) {
       unmatched.add(r.modelPermaslug);
       continue;
     }
-    // 同じ出典・指標・版が重複したら先勝ち（合成しない）
-    if (m.metrics.some((x) => x.source === r.source && x.metric === r.metric && x.version === r.version)) continue;
     const { modelPermaslug, ...rest } = r;
-    m.metrics.push(rest);
-    matched++;
+    let used = false;
+    for (const m of targets) {
+      // 同じ出典・指標・版が重複したら先勝ち（合成しない）
+      if (m.metrics.some((x) => x.source === r.source && x.metric === r.metric && x.version === r.version)) continue;
+      m.metrics.push({ ...rest });
+      used = true;
+    }
+    if (used) matched++;
   }
   return { matched, unmatched: [...unmatched].sort() };
 }

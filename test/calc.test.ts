@@ -129,6 +129,19 @@ describe('正規化', () => {
     expect(res.unmatched).toEqual(['nobody/x']);
     expect(m.metrics.map((x: { metric: string }) => x.metric).sort()).toEqual(['gpqa_diamond_accuracy', 'intelligence_index']);
   });
+  it(':batch など canonical_slug を共有する全モデルに同じスコアを付ける', () => {
+    const recs = normalizeBenchmarkResponse({
+      data: [{ source: 'artificial-analysis', model_permaslug: 'openai/m-20261117', intelligence_index: 62 }],
+      meta: { as_of: null, version: 'v1' },
+    });
+    const base = normalizeModel({ id: 'openai/m', canonical_slug: 'openai/m-20261117' });
+    const batch = normalizeModel({ id: 'openai/m:batch', canonical_slug: 'openai/m-20261117' });
+    const res = attachMetrics([base, batch], recs);
+    expect(res.matched).toBe(1);
+    expect(base.metrics[0].score).toBe(62);
+    expect(batch.metrics[0].score).toBe(62);
+    expect(base.metrics[0]).not.toBe(batch.metrics[0]);
+  });
   it('速度は p50 の中央値', () => {
     expect(medianP50([{ t: { p50: 10 } }, { t: { p50: 30 } }, { t: null }], 't')).toBe(20);
     expect(medianP50([{ t: null }], 't')).toBeNull();

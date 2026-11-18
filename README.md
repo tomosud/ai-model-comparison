@@ -15,7 +15,7 @@ GitHub Actions (毎日 / 手動)
   └ scripts/update-data.mjs
       ├ GET /api/v1/models                     … 公開。価格・コンテキスト長など
       ├ GET /api/v1/benchmarks?source=…        … 要 API キー。Artificial Analysis 指標、OpenRouter 自前評価
-      └ GET /api/v1/models/{id}/endpoints      … 要 API キー。直近 30 分の速度・遅延 (p50)
+      └ GET /api/v1/models/{id}/endpoints      … 要 API キー。直近 30 分の速度・遅延 (p50。遅延はミリ秒で返るので秒に直す)
   → public/data/catalog.json をコミット → Pages を再デプロイ
 ブラウザ
   └ data/catalog.json を読むだけ（キーも外部 API 呼び出しも無し）
@@ -46,7 +46,7 @@ OPENROUTER_API_KEY=sk-or-... npm run update-data
 ## GitHub Pages の設定
 
 1. リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にする。
-2. **Settings → Secrets and variables → Actions → New repository secret** で `OPENROUTER_API_KEY` を登録する（[OpenRouter のキー](https://openrouter.ai/settings/keys)。残高は不要、どの有効なキーでも可）。
+2. **Settings → Secrets and variables → Actions → New repository secret** で `OPENROUTER_API_KEY` を登録する（[OpenRouter のキー](https://openrouter.ai/settings/keys)。どの有効なキーでも可。読み取りにしか使わないので Credit limit は少額でよい）。
 3. **Actions → Update model data → Run workflow** で初回取得。以後は毎日 06:17 JST に自動更新。
 4. `main` に push すると `Deploy to GitHub Pages` が走り、`https://<user>.github.io/<repo>/` に公開されます。Vite の `base: './'` で相対パスにしているので、サブパスでもそのまま動きます。
 

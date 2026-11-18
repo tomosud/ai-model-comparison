@@ -78,7 +78,9 @@ async function fetchSpeeds(modelsResp) {
       const resp = await getJson(`${API}/models/${m.id}/endpoints`, { auth: true, tries: 3 });
       const eps = resp?.data?.endpoints;
       const t = medianP50(eps, 'throughput_last_30m');
-      const l = medianP50(eps, 'latency_last_30m');
+      // latency_last_30m はミリ秒で返る（実測で 1,000〜14,000 程度）。秒にそろえる
+      const lMs = medianP50(eps, 'latency_last_30m');
+      const l = lMs === null ? null : Math.round(lMs) / 1000;
       if (t !== null || l !== null) out[m.id] = { throughputTps: t, latencySeconds: l, measuredAt: new Date().toISOString() };
     } catch (e) {
       console.warn(`speed skip ${m.id}: ${e.message}`);
