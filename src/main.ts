@@ -357,7 +357,14 @@ function renderChart() {
     });
   }
 
-  const metricName = metricLabel(state.metric);
+  // 狭い画面では軸名を短くする（トークン数は入力欄に出ているので省く）
+  const narrow = el.clientWidth < 560;
+  const metricShort = state.metric ? (METRIC_LABELS[parseMetricKey(state.metric).metric] ?? parseMetricKey(state.metric).metric) : '';
+  const metricName = narrow ? metricShort : metricLabel(state.metric);
+  const xName = rel
+    ? narrow ? 'コスト比（小さいほど安い）' : 'コスト比（基準 = 1, 小さいほど安い）'
+    : narrow ? '想定コスト USD' : `想定コスト USD（入力 ${state.inTok.toLocaleString()} / 出力 ${state.outTok.toLocaleString()} tok）`;
+  const yName = rel ? (narrow ? 'スコア比（大きいほど高い）' : 'スコア比（基準 = 1, 大きいほど高い）') : metricName;
   chart.setOption(
     {
       animation: false,
@@ -374,7 +381,7 @@ function renderChart() {
       },
       xAxis: {
         type: state.logX ? 'log' : 'value',
-        name: rel ? 'コスト比（基準 = 1, 小さいほど安い）' : `想定コスト USD（入力 ${state.inTok.toLocaleString()} / 出力 ${state.outTok.toLocaleString()} tok）`,
+        name: xName,
         nameLocation: 'middle',
         nameGap: 30,
         nameTextStyle: { color: muted },
@@ -385,7 +392,7 @@ function renderChart() {
       },
       yAxis: {
         type: 'value',
-        name: rel ? 'スコア比（基準 = 1, 大きいほど高い）' : metricName,
+        name: yName,
         nameLocation: 'middle',
         nameGap: 52,
         nameTextStyle: { color: muted },
@@ -667,7 +674,12 @@ function bindControls() {
   });
   $('csv').addEventListener('click', exportCsv);
 
-  window.addEventListener('resize', () => chart?.resize());
+  let rt: number | undefined;
+  window.addEventListener('resize', () => {
+    chart?.resize();
+    clearTimeout(rt);
+    rt = window.setTimeout(renderChart, 150); // 幅の境目をまたいだら軸名を描き直す
+  });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { renderProviders(); recompute(); });
 }
 
