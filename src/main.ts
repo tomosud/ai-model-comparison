@@ -254,8 +254,9 @@ function recompute() {
   writeUrl();
 }
 
+let modelById = new Map<string, Model>();
 function baseModel(): Model | null {
-  return catalog?.models.find((m) => m.id === state.base) ?? null;
+  return (state.base && modelById.get(state.base)) || null;
 }
 
 function renderMeta() {
@@ -431,7 +432,7 @@ function renderChart() {
         position: 'right',
         color: muted,
         fontSize: 11,
-        formatter: (p: { data: { row: Row; name: string } }) => labelText(p.data.row, p.data.name),
+        formatter: (p: { data: LabelItem }) => (p.data.joined ? `{n|${p.data.joined}}` : labelText(p.data.row, p.data.name)),
         rich,
         backgroundColor: surface,
         padding: [1, 3],
@@ -467,7 +468,7 @@ function renderChart() {
       symbolSize: 26,
       z: 10,
       itemStyle: { color: providerColor(baseRow.model.providerSlug), borderColor: text, borderWidth: 2 },
-      label: { show: true, position: 'top', formatter: (p: { data: { row: Row; name: string } }) => labelText(p.data.row, p.data.name, '基準: '), rich: { ...rich, n: { color: text, fontWeight: 'bold', fontSize: 12 } }, backgroundColor: surface, padding: [1, 3], borderRadius: 3 },
+      label: { show: true, position: 'top', formatter: (p: { data: LabelItem }) => (p.data.joined ? `{n|基準: ${p.data.joined}}` : labelText(p.data.row, p.data.name, '基準: ')), rich: { ...rich, n: { color: text, fontWeight: 'bold', fontSize: 12 } }, backgroundColor: surface, padding: [1, 3], borderRadius: 3 },
       markLine: {
         silent: true,
         symbol: 'none',
@@ -482,8 +483,15 @@ function renderChart() {
   const axisSig = `${state.metric}|${rel}|${state.logX}`;
   let zoomKeep: { start?: number; end?: number }[] = [{}, {}];
   if (axisSig === lastAxisSig) {
-    const dz = (chart.getOption().dataZoom ?? []) as { start?: number; end?: number }[];
-    zoomKeep = [0, 1].map((i) => (dz[i] ? { start: dz[i].start, end: dz[i].end } : {}));
+    zoomKeep = [0, 1].map((i) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const r = (chart as any).getModel().getComponent('dataZoom', i).getPercentRange() as number[];
+        return { start: r[0], end: r[1] };
+      } catch {
+        return {};
+      }
+    });
   }
   lastAxisSig = axisSig;
 
@@ -545,7 +553,7 @@ function renderChart() {
 }
 
 // ---------- 名前の配置 ----------
-type LabelItem = Record<string, unknown> & { value: number[]; name: string; row: Row; symbolSize?: number; barRich?: unknown };
+type LabelItem = Record<string, unknown> & { value: number[]; name: string; row: Row; symbolSize?: number; barRich?: unknown; joined?: string };
 let labelItems: LabelItem[] = [];
 let labelBase: LabelItem | null = null;
 let measureCanvas: HTMLCanvasElement | null = null;
@@ -594,13 +602,34 @@ function placeLabels() {
     const pb = b === labelBase ? 0 : b.row.pareto ? 1 : 2;
     return pa - pb || (px.get(a)![1] - px.get(b)![1]);
   });
-  const placed = new Set<LabelItem>();
+  // ほぼ同じ位置の点（10px 以内＝点どうしが重なる）は 1 つの名前に併記する（例: 「A / B」）
+  const leaders: LabelItem[] = [];
+  const members = new Map<LabelItem, LabelItem[]>();
   for (const it of order) {
     const [x, y] = px.get(it)!;
+    const lead = leaders.find((l) => {
+      const [lx, ly] = px.get(l)!;
+      return Math.abs(lx - x) <= 10 && Math.abs(ly - y) <= 10;
+    });
+    if (lead) members.get(lead)!.push(it);
+    else {
+      leaders.push(it);
+      members.set(it, [it]);
+    }
+  }
+  for (const it of all) delete it.joined;
+  const placed = new Set<LabelItem>();
+  for (const it of leaders) {
+    const [x, y] = px.get(it)!;
     const isBase = it === labelBase;
-    const text = (isBase ? '基準: ' : '') + it.name;
+    const group = members.get(it)!;
+    const names = group.map((g) => g.name);
+    const joined = names.length > 3 ? `${names.slice(0, 3).join(' / ')} 他${names.length - 3}` : names.join(' / ');
+    if (group.length > 1) it.joined = joined;
+    const text = (isBase ? '基準: ' : '') + joined;
     const w = textWidth(text, `${isBase ? 'bold 12px' : '11px'} ${family}`) + 7;
-    const h = (isBase ? 17 : 15) + (state.speedViz === 'bar' && it.barRich ? 6 : 0);
+    const hasBar = group.length === 1 && state.speedViz === 'bar' && !!it.barRich;
+    const h = (isBase ? 17 : 15) + (hasBar ? 6 : 0);
     const r = sizeOf(it) / 2 + 3;
     const cands: [number, number][] = [
       [x + r, y - h / 2], // 右
@@ -624,7 +653,7 @@ function placeLabels() {
     }
     if (ok) {
       boxes.push(ok);
-      placed.add(it);
+      for (const g of group) placed.add(g);
       // position は点の外接矩形の左上からの相対
       it.label = { ...(isBase ? {} : { rich: it.barRich ?? {} }), show: true, position: [ok.x - (x - s / 2), ok.y - (y - s / 2)], align: 'left', verticalAlign: 'top' };
     } else if (isBase) {
@@ -635,7 +664,7 @@ function placeLabels() {
   const upd: Record<string, unknown>[] = [{ id: 'models', data: labelItems }];
   if (labelBase) upd.push({ id: 'base', data: [labelBase] });
   chart.setOption({ series: upd });
-  const hidden = order.length - placed.size;
+  const hidden = order.filter((it) => !placed.has(it)).length;
   const note = $('labelNote');
   if (note) note.textContent = hidden > 0 ? `名前が重なるため ${hidden} 件は省略（拡大すると出ます。点にマウスを乗せても見られます）` : '';
 }
@@ -838,7 +867,27 @@ function renderFooter() {
 function setBase(id: string) {
   state.base = id;
   state.detail = id;
-  recompute();
+  withBusy('基準を切り替え中…', recompute);
+}
+
+let busyTimer = 0;
+/** すぐに「更新中」を表示してから、ブラウザに一度描かせたあとで重い処理を走らせる */
+function withBusy(msg: string, fn: () => void) {
+  const badge = $('busy');
+  badge.textContent = msg;
+  badge.hidden = false;
+  document.body.classList.add('is-busy');
+  clearTimeout(busyTimer);
+  requestAnimationFrame(() => {
+    busyTimer = window.setTimeout(() => {
+      try {
+        fn();
+      } finally {
+        badge.hidden = true;
+        document.body.classList.remove('is-busy');
+      }
+    }, 0);
+  });
 }
 
 async function switchData(d: 'live' | 'sample') {
@@ -981,6 +1030,7 @@ function exportCsv() {
 async function start() {
   try {
     catalog = toPercent(await load());
+    modelById = new Map(catalog.models.map((m) => [m.id, m]));
   } catch (e) {
     showLoadError(e);
     return;

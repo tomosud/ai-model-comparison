@@ -189,3 +189,9 @@ tr.is-detail td.col-model { box-shadow: inset 3px 0 0 var(--accent), 1px 0 0 var
   .f-search { grid-column: span 2; }
   .col-model { max-width: 160px; }
 }
+
+.busy-badge { margin-left: 8px; font-size: 12px; font-weight: 600; color: var(--accent); }
+.busy-badge::before { content: ''; display: inline-block; width: 10px; height: 10px; margin-right: 5px; vertical-align: -1px; border: 2px solid var(--accent); border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.is-busy .chart, .is-busy .table-scroll, .is-busy #baseCard, .is-busy #detail { opacity: 0.55; transition: opacity 0.08s; }
+.is-busy { cursor: progress; }
