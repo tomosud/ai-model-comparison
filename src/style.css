@@ -242,3 +242,4 @@ td.db-lat { --bc: rgba(192, 132, 252, 0.2); }
 td.db.good, td.db.bad { background-image: linear-gradient(var(--bc), var(--bc)), linear-gradient(var(--tint), var(--tint)); background-size: var(--w) 62%, 100% 100%; }
 td.good { --tint: var(--good-soft); }
 td.bad { --tint: var(--bad-soft); }
+tbody tr[data-id] { cursor: pointer; }

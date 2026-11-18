@@ -244,16 +244,29 @@ function recompute() {
   if (metrics.length && !metrics.some((m) => m.key === state.metric)) state.metric = defaultMetric(visible);
   // 基準はフィルタの影響を受けない（カタログ全体から引く）
   const base = baseModel();
+  const T = PERF ? [performance.now()] : null;
+  const lap = () => T?.push(performance.now());
   rows = buildRows(visible, base, state.metric, state.inTok, state.outTok);
+  lap();
   renderMetricSelect(metrics);
   renderBanners();
+  lap();
   renderChart();
+  lap();
   renderBaseCard();
   renderDetail();
   renderPicks();
+  lap();
   renderTable();
+  lap();
   writeUrl();
+  if (T) {
+    const names = ['rows', 'selects', 'chart', 'cards', 'table'];
+    (window as unknown as { __perf: unknown[] }).__perf ??= [];
+    (window as unknown as { __perf: unknown[] }).__perf.push(Object.fromEntries(names.map((n, i) => [n, +(T[i + 1] - T[i]).toFixed(1)])));
+  }
 }
+const PERF = new URLSearchParams(location.search).has('perf');
 
 /** 表示中のモデルから「効率が最良・最高スコア・最安・最速」を拾って並べる（クリックで基準に） */
 function renderPicks() {
@@ -394,6 +407,7 @@ function renderChart() {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(placeLabels);
     });
+    chart.on('mouseover', (p) => hoverDetail((p.data as { id?: string } | undefined)?.id));
     chart.on('click', (p) => {
       const id = (p.data as { id?: string } | undefined)?.id;
       if (id) setBase(id);
@@ -716,7 +730,7 @@ function renderBaseCard() {
   const el = $('baseCard');
   const base = baseModel();
   if (!base) {
-    el.innerHTML = `<div class="label-small">基準モデル</div><p>未選択です。散布図の点か、表のモデル名をクリックして選んでください。</p>`;
+    el.innerHTML = `<div class="label-small">基準モデル</div><p>未選択です。散布図の点か、表の行をクリックして選んでください。</p>`;
     return;
   }
   const cost = scenarioCostUsd(base, state.inTok, state.outTok);
@@ -748,7 +762,7 @@ function renderDetail() {
   const id = state.detail ?? state.base;
   const m = catalog?.models.find((x) => x.id === id);
   if (!m) {
-    el.innerHTML = `<div class="label-small">モデル詳細</div><p class="na">表の行をクリックすると、ここに詳細が出ます。</p>`;
+    el.innerHTML = `<div class="label-small">モデル詳細</div><p class="na">散布図の点や表の行にマウスを乗せると、ここに詳細が出ます。</p>`;
     return;
   }
   const r = rows.find((x) => x.model.id === m.id) ?? buildRows([m], baseModel(), state.metric, state.inTok, state.outTok)[0];
@@ -915,9 +929,19 @@ function renderFooter() {
 
 // ---------- 操作 ----------
 function setBase(id: string) {
+  if (state.base === id) return;
   state.base = id;
   state.detail = id;
-  withBusy('基準を切り替え中…', recompute);
+  recompute();
+}
+
+/** マウスを乗せたモデルを右の詳細に出す（表は作り直さず、強調の行だけ付け替える） */
+function hoverDetail(id: string | undefined) {
+  if (!id || state.detail === id) return;
+  state.detail = id;
+  renderDetail();
+  $('table').querySelectorAll('tr.is-detail').forEach((tr) => tr.classList.remove('is-detail'));
+  $('table').querySelector(`tr[data-id="${CSS.escape(id)}"]`)?.classList.add('is-detail');
 }
 
 let busyTimer = 0;
@@ -953,6 +977,7 @@ function bindControls() {
     const id = (e.target as HTMLElement).closest<HTMLElement>('[data-base]')?.dataset.base;
     if (id) setBase(id);
   });
+  $('picks').addEventListener('mouseover', (e) => hoverDetail((e.target as HTMLElement).closest<HTMLElement>('[data-base]')?.dataset.base));
   $('providers').addEventListener('change', () => {
     state.providers = [...document.querySelectorAll<HTMLInputElement>('#providers input:checked')].map((i) => i.value);
     recompute();
@@ -1020,13 +1045,11 @@ function bindControls() {
     if (th?.dataset.key) return sortBy(th.dataset.key as SortKey);
     const btn = target.closest<HTMLElement>('[data-base]');
     if (btn?.dataset.base) return setBase(btn.dataset.base);
+    // 行のどこをクリックしても基準にする（詳細はマウスを乗せるだけで出る）
     const tr = target.closest<HTMLElement>('tr[data-id]');
-    if (tr?.dataset.id) {
-      state.detail = tr.dataset.id;
-      renderDetail();
-      renderTable();
-    }
+    if (tr?.dataset.id) setBase(tr.dataset.id);
   });
+  table.addEventListener('mouseover', (e) => hoverDetail((e.target as HTMLElement).closest<HTMLElement>('tr[data-id]')?.dataset.id));
   table.addEventListener('keydown', (e) => {
     const th = (e.target as HTMLElement).closest('th');
     if (th?.dataset.key && (e.key === 'Enter' || e.key === ' ')) {
