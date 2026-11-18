@@ -250,8 +250,35 @@ function recompute() {
   renderChart();
   renderBaseCard();
   renderDetail();
+  renderPicks();
   renderTable();
   writeUrl();
+}
+
+/** 表示中のモデルから「効率が最良・最高スコア・最安・最速」を拾って並べる（クリックで基準に） */
+function renderPicks() {
+  const el = $('picks');
+  const best = (f: (r: Row) => number | null, dir: 1 | -1) => {
+    let top: Row | null = null;
+    let tv = 0;
+    for (const r of rows) {
+      const v = f(r);
+      if (v === null || !Number.isFinite(v)) continue;
+      if (!top || (v - tv) * dir > 0) { top = r; tv = v; }
+    }
+    return top ? { r: top, v: tv } : null;
+  };
+  const items: [string, string, ReturnType<typeof best>, (v: number) => string][] = [
+    [ICON.eff, 'コスト効率が最良', best((r) => r.scorePerDollar, 1), (v) => `${fmtNum(v, 1)} 点/$`],
+    [ICON.score, 'スコアが最高', best((r) => r.score, 1), (v) => fmtNum(v, 1)],
+    [ICON.cost, '想定コストが最安（有料）', best((r) => (r.score !== null && r.cost !== null && r.cost > 0 ? r.cost : null), -1), (v) => fmtUsd(v)],
+    [ICON.speed, '速度が最速', best((r) => r.model.throughputTps, 1), (v) => `${fmtNum(v, 0)} tok/s`],
+  ];
+  el.innerHTML = `<div class="f-label">表示中のいちばん</div>` + items
+    .map(([ic, label, b, f]) => b
+      ? `<button type="button" class="pick" data-base="${esc(b.r.model.id)}" title="クリックで基準にする"><span class="pk">${ic}${label}</span><span class="pv"><span class="dot" style="background:${providerColor(b.r.model.providerSlug)}"></span><b>${esc(shortName(b.r.model))}</b><span class="pn">${f(b.v)}</span></span></button>`
+      : `<div class="pick na"><span class="pk">${ic}${label}</span><span class="pv">該当なし</span></div>`)
+    .join('');
 }
 
 let modelById = new Map<string, Model>();
@@ -508,8 +535,8 @@ function renderChart() {
     {
       animation: false,
       textStyle: { fontFamily: getComputedStyle(document.body).fontFamily },
-      legend: { top: 0, selectedMode: false, textStyle: { color: text }, data: [...groups.keys()].map(providerName).concat(baseRow ? ['基準'] : []) },
-      grid: { left: 64, right: 28, top: 40, bottom: 76, containLabel: true },
+      legend: { top: 0, right: 0, selectedMode: false, itemWidth: 12, itemHeight: 10, textStyle: { color: text, fontSize: 12 }, data: [...groups.keys()].map(providerName).concat(baseRow ? ['基準'] : []) },
+      grid: { left: 56, right: 24, top: 30, bottom: 58, containLabel: true },
       tooltip: {
         trigger: 'item',
         confine: true,
@@ -544,7 +571,7 @@ function renderChart() {
         // ホイールで拡大縮小、ドラッグで移動。F キーか「フィット」で全体表示に戻す
         { type: 'inside', xAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[0] },
         { type: 'inside', yAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[1] },
-        { type: 'slider', xAxisIndex: 0, height: 16, bottom: 6, filterMode: 'none', textStyle: { color: muted }, borderColor: border, ...zoomKeep[0] },
+        { type: 'slider', xAxisIndex: 0, height: 14, bottom: 4, filterMode: 'none', textStyle: { color: muted }, borderColor: border, backgroundColor: cssVar('--surface-2'), fillerColor: 'rgba(110,160,255,0.18)', dataBackground: { lineStyle: { color: border }, areaStyle: { color: border } }, selectedDataBackground: { lineStyle: { color: cssVar('--accent') }, areaStyle: { color: 'rgba(110,160,255,0.25)' } }, handleStyle: { color: cssVar('--surface-3'), borderColor: muted }, moveHandleStyle: { color: cssVar('--surface-3') }, ...zoomKeep[0] },
       ],
       series,
     },
@@ -698,21 +725,20 @@ function renderBaseCard() {
   el.innerHTML = `<div class="label-small">基準モデル（= 1.00×）</div>
     <div class="model-title"><span class="dot" style="background:${providerColor(base.providerSlug)}"></span><h3>${esc(shortName(base))}</h3></div>
     <div class="model-id">${esc(base.id)}</div>
-    <dl class="kv">
-      <dt>入力単価</dt><dd>$${fmtNum(base.inputUsdPerMillion, 3)} / 100万tok</dd>
-      <dt>出力単価</dt><dd>$${fmtNum(base.outputUsdPerMillion, 3)} / 100万tok</dd>
-      <dt>想定コスト</dt><dd>${fmtUsd(cost)}</dd>
-      <dt>スコア</dt><dd>${metric ? fmtNum(metric.score, 2) : 'N/A（未評価）'}</dd>
-      <dt>速度</dt><dd>${base.throughputTps !== null ? `${fmtNum(base.throughputTps, 0)} tok/s` : '未取得'}</dd>
-    </dl>
+    <div class="stats">
+      <div class="stat s-score" title="${esc(metricLabel(state.metric))}"><span class="k">${ICON.score}スコア</span><span class="v">${metric ? fmtNum(metric.score, 2) : 'N/A'}</span></div>
+      <div class="stat s-cost"><span class="k">${ICON.cost}想定コスト</span><span class="v">${fmtUsd(cost)}</span></div>
+      <div class="stat s-price"><span class="k">${ICON.price}単価 入/出 (100万tok)</span><span class="v">$${fmtNum(base.inputUsdPerMillion, 2)} / $${fmtNum(base.outputUsdPerMillion, 2)}</span></div>
+      <div class="stat s-speed"><span class="k">${ICON.speed}速度 / ${ICON.latency}遅延</span><span class="v">${base.throughputTps !== null ? `${fmtNum(base.throughputTps, 0)}<span class="u">tok/s</span>` : '未取得'}${base.latencySeconds !== null ? ` <span class="u">/ ${fmtNum(base.latencySeconds, 2)} s</span>` : ''}</span></div>
+    </div>
     ${outside ? '<div class="warn-inline">基準モデルは現在のフィルタ外です（設定は保持しています）。</div>' : ''}`;
 }
 
-function bar(label: string, v: number | null, better: 'high' | 'low') {
+function bar(label: string, v: number | null, better: 'high' | 'low', icon = '') {
   const max = 3;
   const w = v === null ? 0 : Math.min(v, max) / max;
   const cls = v === null || Math.abs(v - 1) < 0.005 ? 'na' : (v > 1) === (better === 'high') ? 'good' : 'bad';
-  return `<div class="bar-row"><span>${label}<br><span class="na" style="font-size:10.5px">${better === 'high' ? '高いほど良い' : '低いほど良い'}</span></span>
+  return `<div class="bar-row"><span>${icon}${label}<span class="hint-dir">${better === 'high' ? '↑良' : '↓良'}</span></span>
     <div class="bar-track"><div class="bar-fill" style="width:${(w * 100).toFixed(1)}%;${v === null ? '' : `background:var(--${cls === 'na' ? 'neutral' : cls})`}"></div><div class="bar-one" style="left:${(100 / max).toFixed(2)}%"></div></div>
     <span class="bar-val ${cls}">${fmtRatio(v)}</span></div>`;
 }
@@ -727,7 +753,7 @@ function renderDetail() {
   }
   const r = rows.find((x) => x.model.id === m.id) ?? buildRows([m], baseModel(), state.metric, state.inTok, state.outTok)[0];
   const metrics = [...m.metrics].sort((a, b) => a.metric.localeCompare(b.metric));
-  el.innerHTML = `<div class="label-small">モデル詳細</div>
+  el.innerHTML = `<div class="detail-head"><span class="label-small">モデル詳細</span>${m.id !== state.base ? `<button class="btn" id="detailSetBase">これを基準にする</button>` : '<span class="tag base">基準</span>'}</div>
     <div class="model-title"><span class="dot" style="background:${providerColor(m.providerSlug)}"></span><h3>${esc(shortName(m))}</h3></div>
     <div class="model-id">${esc(m.id)}</div>
     <dl class="kv">
@@ -739,18 +765,35 @@ function renderDetail() {
       <dt>速度 / 遅延</dt><dd>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '未取得'} / ${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '未取得'}</dd>
       ${m.hiddenReasons.length ? `<dt>既定で非表示</dt><dd>${esc(m.hiddenReasons.join(', '))}</dd>` : ''}
     </dl>
+    <div class="label-small" style="margin-top:10px">基準比（縦線 = 1.00×、緑 = 基準より良い）</div>
     <div class="bars" aria-label="基準比（縦線 = 1.00×）">
-      ${bar('スコア', r.relScore, 'high')}
-      ${bar('コスト', r.relCost, 'low')}
-      ${bar('効率', r.relEfficiency, 'high')}
-      ${bar('速度', r.relSpeed, 'high')}
-      ${bar('遅延', r.relLatency, 'low')}
+      ${bar('スコア', r.relScore, 'high', ICON.score)}
+      ${bar('コスト', r.relCost, 'low', ICON.cost)}
+      ${bar('効率', r.relEfficiency, 'high', ICON.eff)}
+      ${bar('速度', r.relSpeed, 'high', ICON.speed)}
+      ${bar('遅延', r.relLatency, 'low', ICON.latency)}
     </div>
     <div class="label-small" style="margin-top:10px">評価スコア（${metrics.length}）</div>
-    ${metrics.length ? `<ul class="metric-list">${metrics.map((x) => `<li><span>${esc(METRIC_LABELS[x.metric] ?? x.metric)}<br><span class="src">${esc(SOURCE_LABELS[x.source] ?? x.source)}${x.version ? ` ${esc(x.version)}` : ''} ・ ${esc(fmtDay(x.evaluatedAt))}</span></span><b>${fmtNum(x.score, 2)}</b></li>`).join('')}</ul>` : '<p class="na">未評価</p>'}
-    ${m.id !== state.base ? `<button class="btn" id="detailSetBase" style="margin-top:10px">このモデルを基準にする</button>` : ''}`;
+    ${metrics.length ? `<ul class="metric-list">${metrics.map((x) => `<li class="${metricKeyOf(x) === state.metric ? 'on' : ''}"><span>${esc(METRIC_LABELS[x.metric] ?? x.metric)}<span class="src">${esc(SOURCE_LABELS[x.source] ?? x.source)}${x.version ? ` ${esc(x.version)}` : ''} ・ ${esc(fmtDay(x.evaluatedAt))}</span></span><b>${fmtNum(x.score, 2)}</b></li>`).join('')}</ul>` : '<p class="na">未評価</p>'}
+`;
   $('detailSetBase')?.addEventListener('click', () => setBase(m.id));
 }
+
+// 量の種類ごとの小さなアイコン（色は CSS の .ic-* で付ける）
+const svg = (cls: string, d: string) => `<svg class="ic ${cls}" viewBox="0 0 16 16" aria-hidden="true">${d}</svg>`;
+const ICON = {
+  score: svg('ic-score', '<path d="M8 1.5l1.9 4 4.4.5-3.3 3 .9 4.4L8 11.2 4.1 13.4l.9-4.4-3.3-3 4.4-.5z" fill="currentColor"/>'),
+  cost: svg('ic-cost', '<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.2 5.6c-.4-.6-1.2-1-2.2-1-1.3 0-2.2.7-2.2 1.6 0 2.2 4.5 1.2 4.5 3.5 0 1-1 1.7-2.3 1.7-1.1 0-1.9-.4-2.3-1.1M8 3.4v1.2M8 11.4v1.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'),
+  price: svg('ic-price', '<path d="M2 8.5V3h5.5L14 9.5 8.5 15z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5" cy="6" r="1.2" fill="currentColor"/>'),
+  eff: svg('ic-eff', '<path d="M2 13l4-4 3 2.5L14 5M10.5 5H14v3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'),
+  speed: svg('ic-speed', '<path d="M9 1L3 9h4.5L6.5 15 13 6.5H8.5z" fill="currentColor"/>'),
+  latency: svg('ic-lat', '<circle cx="8" cy="9" r="5.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.8V9l2 1.6M6.3 1.5h3.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'),
+  date: svg('ic-date', '<rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>'),
+};
+const COL_ICON: Partial<Record<string, string>> = {
+  score: ICON.score, relScore: ICON.score, cost: ICON.cost, relCost: ICON.cost, relEfficiency: ICON.eff,
+  speed: ICON.speed, relSpeed: ICON.speed, latency: ICON.latency, relLatency: ICON.latency, created: ICON.date,
+};
 
 const BASE_COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] = [
   { key: 'provider', label: 'メーカー', cls: 'l' },
@@ -823,7 +866,13 @@ function renderTable() {
   const base = baseModel();
   const cols = columns();
   const extraKeys = cols.filter((c) => c.key.startsWith('m:')).map((c) => c.key.slice(2));
-  const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${c.label}</th>`).join('')}</tr></thead>`;
+  const maxOf = (f: (r: Row) => number | null) => Math.max(0, ...list.map((r) => f(r) ?? 0));
+  const mScore = maxOf((r) => r.score);
+  const mCost = maxOf((r) => r.cost);
+  const mTps = maxOf((r) => r.model.throughputTps);
+  const mLat = maxOf((r) => r.model.latencySeconds);
+  const db = (v: number | null, max: number, kind: string) => (v === null || max <= 0 ? '' : ` class="db db-${kind}" style="--w:${Math.max(2, (100 * v) / max).toFixed(1)}%"`);
+  const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${COL_ICON[c.key] ?? ''}${c.label}</th>`).join('')}</tr></thead>`;
   const body = list
     .map((r) => {
       const m = r.model;
@@ -832,15 +881,15 @@ function renderTable() {
       return `<tr data-id="${esc(m.id)}" class="${isBase ? 'is-base' : ''} ${state.detail === m.id ? 'is-detail' : ''}">
         <td class="l"><span class="prov"><span class="dot" style="background:${providerColor(m.providerSlug)}"></span>${esc(providerName(m.providerSlug))}</span></td>
         <td class="l col-model" title="${esc(m.id)}"><button type="button" class="model-btn" data-base="${esc(m.id)}" title="クリックで基準に設定">${esc(shortName(m))}</button>${isBase ? '<span class="tag base">基準</span>' : ''}${r.pareto ? '<span class="tag pareto">パレート</span>' : ''}</td>
-        <td title="${esc(src)}">${r.score === null ? '<span class="na">未評価</span>' : fmtNum(r.score, 2)}</td>
+        <td title="${esc(src)}"${db(r.score, mScore, 'score')}>${r.score === null ? '<span class="na">未評価</span>' : fmtNum(r.score, 2)}</td>
         ${ratioCell(r.relScore, 'high', `${fmtNum(r.score, 4)} ÷ ${fmtNum(base ? findMetric(base, state.metric)?.score ?? null : null, 4)}`)}
-        <td title="入力 $${fmtNum(m.inputUsdPerMillion, 4)} / 出力 $${fmtNum(m.outputUsdPerMillion, 4)} per 100万tok">${fmtUsd(r.cost)}</td>
+        <td title="入力 $${fmtNum(m.inputUsdPerMillion, 4)} / 出力 $${fmtNum(m.outputUsdPerMillion, 4)} per 100万tok"${db(r.cost, mCost, 'cost')}>${fmtUsd(r.cost)}</td>
         ${ratioCell(r.relCost, 'low', `${fmtUsd(r.cost)} ÷ ${fmtUsd(base ? scenarioCostUsd(base, state.inTok, state.outTok) : null)}`)}
         ${ratioCell(r.relEfficiency, 'high', r.scorePerDollar === null ? 'スコア/ドルが定義できません' : `スコア/ドル = ${r.scorePerDollar.toFixed(3)}`)}
         ${extraKeys.map((k) => ratioCell(keyRatio(m, k), 'high', `${fmtNum(findMetric(m, k)?.score ?? null, 3)} ÷ ${fmtNum(base ? findMetric(base, k)?.score ?? null : null, 3)}`)).join('')}
-        <td>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '<span class="na">未取得</span>'}</td>
+        <td${db(m.throughputTps, mTps, 'speed')}>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '<span class="na">未取得</span>'}</td>
         ${ratioCell(r.relSpeed, 'high', `${fmtNum(m.throughputTps, 1)} tok/s`)}
-        <td>${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '<span class="na">未取得</span>'}</td>
+        <td${db(m.latencySeconds, mLat, 'lat')}>${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '<span class="na">未取得</span>'}</td>
         ${ratioCell(r.relLatency, 'low', `${fmtNum(m.latencySeconds, 3)} s`)}
         <td>${esc(fmtDay(m.createdAt))}</td>
       </tr>`;
@@ -900,6 +949,10 @@ async function switchData(d: 'live' | 'sample') {
 
 function bindControls() {
   $('resetBtn').addEventListener('click', resetView);
+  $('picks').addEventListener('click', (e) => {
+    const id = (e.target as HTMLElement).closest<HTMLElement>('[data-base]')?.dataset.base;
+    if (id) setBase(id);
+  });
   $('providers').addEventListener('change', () => {
     state.providers = [...document.querySelectorAll<HTMLInputElement>('#providers input:checked')].map((i) => i.value);
     recompute();
@@ -919,6 +972,13 @@ function bindControls() {
   };
   tok('inTok');
   tok('outTok');
+  $<HTMLSelectElement>('usage').addEventListener('change', (e) => {
+    const v = (e.target as HTMLSelectElement).value;
+    customTok = v === 'custom';
+    if (!customTok) [state.inTok, state.outTok] = v.split(':').map(Number);
+    syncInputs();
+    recompute();
+  });
   $<HTMLSelectElement>('age').addEventListener('change', (e) => { state.ageMonths = Number((e.target as HTMLSelectElement).value); recompute(); });
   $<HTMLSelectElement>('scope').addEventListener('change', (e) => { state.scope = (e.target as HTMLSelectElement).value as State['scope']; recompute(); });
   $<HTMLSelectElement>('max').addEventListener('change', (e) => { state.maxCount = Number((e.target as HTMLSelectElement).value); recompute(); });
@@ -982,12 +1042,20 @@ function bindControls() {
     clearTimeout(rt);
     rt = window.setTimeout(renderChart, 150); // 幅の境目をまたいだら軸名を描き直す
   });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { renderProviders(); recompute(); });
 }
 
+let customTok = false;
 function syncInputs() {
   $<HTMLInputElement>('inTok').value = String(state.inTok);
   $<HTMLInputElement>('outTok').value = String(state.outTok);
+  // 入出力トークンは「使い方の想定」から選ぶ。どれにも当たらない値や「自分で入力」のときだけ数値欄を出す
+  const usage = $<HTMLSelectElement>('usage');
+  const preset = `${state.inTok}:${state.outTok}`;
+  const isPreset = [...usage.options].some((o) => o.value === preset);
+  if (!isPreset) customTok = true;
+  usage.value = customTok ? 'custom' : preset;
+  $('tokPair').hidden = !customTok;
+  $('usageNote').textContent = customTok ? '' : `入力 ${state.inTok.toLocaleString()} / 出力 ${state.outTok.toLocaleString()} トークン分の料金で比べます`;
   const setSel = (id: string, v: string) => {
     const s = $<HTMLSelectElement>(id);
     if (![...s.options].some((o) => o.value === v)) s.add(new Option(v === '0' ? 'すべて' : v, v));
@@ -1090,6 +1158,7 @@ function resetView() {
   state.metric = defaultMetric(pre);
   state.base = defaultBase(pre, state.metric)?.id ?? null;
   lastAxisSig = ''; // 拡大も全体表示に戻す
+  customTok = false;
   renderProviders();
   syncInputs();
   withBusy('初期状態に戻しています…', recompute);
