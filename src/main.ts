@@ -176,8 +176,9 @@ async function load() {
   const file = state.data === 'sample' ? 'sample.catalog.json' : 'catalog.json';
   // 相対パスなので /<repo>/ 配下でも読める
   const url = new URL(`data/${file}`, document.baseURI);
-  url.searchParams.set('t', String(Math.floor(Date.now() / 600_000))); // 10 分単位でキャッシュを切る
-  const res = await fetch(url);
+  // 毎回サーバーに更新を問い合わせる（変わっていなければ 304 で軽い）。ブラウザ・CDN の古いデータを避ける
+  url.searchParams.set('b', __BUILD_ID__);
+  const res = await fetch(url, { cache: 'no-cache' });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   const json = (await res.json()) as Catalog;
   if (!json || !Array.isArray(json.models)) throw new Error('データの形が想定と違います（models がありません）');
@@ -779,6 +780,36 @@ async function start() {
   recompute();
 }
 
+/**
+ * キャッシュバスター: GitHub Pages は index.html を最大 10 分キャッシュさせるため、
+ * 古い index.html（= 古い JS）が出ることがある。最新のビルド ID を no-store で確かめ、
+ * 違えば URL に ?_v= を付けて 1 回だけ読み直す（別 URL なのでキャッシュを通らない）。
+ */
+async function ensureLatestBuild(): Promise<boolean> {
+  try {
+    const res = await fetch(new URL('version.json', document.baseURI), { cache: 'no-store' });
+    if (!res.ok) return false;
+    const { build } = (await res.json()) as { build?: string };
+    if (!build || build === __BUILD_ID__) return false;
+    const key = `reloaded:${build}`;
+    try {
+      if (sessionStorage.getItem(key)) return false; // 読み直しても古いままなら諦めて今の版で動く
+      sessionStorage.setItem(key, '1');
+    } catch {
+      return false;
+    }
+    const u = new URL(location.href);
+    u.searchParams.set('_v', build);
+    location.replace(u.toString());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 readUrl();
-bindControls();
-start();
+ensureLatestBuild().then((reloading) => {
+  if (reloading) return;
+  bindControls();
+  start();
+});
