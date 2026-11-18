@@ -464,16 +464,17 @@ function renderChart() {
       type: 'scatter',
       name: '基準',
       data: [labelBase],
-      symbol: 'path://M50,3 L61,38 L98,38 L68,60 L79,95 L50,73 L21,95 L32,60 L2,38 L39,38 Z',
-      symbolSize: 26,
+      // 基準は普通の点を少し大きく・濃い縁取りにし、十字の補助線で示す
+      symbol: 'circle',
+      symbolSize: 15,
       z: 10,
-      itemStyle: { color: providerColor(baseRow.model.providerSlug), borderColor: text, borderWidth: 2 },
+      itemStyle: { color: providerColor(baseRow.model.providerSlug), borderColor: text, borderWidth: 2.5 },
       label: { show: true, position: 'top', formatter: (p: { data: LabelItem }) => (p.data.joined ? `{n|基準: ${p.data.joined}}` : labelText(p.data.row, p.data.name, '基準: ')), rich: { ...rich, n: { color: text, fontWeight: 'bold', fontSize: 12 } }, backgroundColor: surface, padding: [1, 3], borderRadius: 3 },
       markLine: {
         silent: true,
         symbol: 'none',
         label: { show: false },
-        lineStyle: { color: muted, type: 'dashed', width: 1 },
+        lineStyle: { color: text, type: 'dashed', width: 1, opacity: 0.55 },
         data: markLines,
       },
     });
@@ -584,7 +585,7 @@ function placeLabels() {
   const all = (labelBase ? [labelBase] : []).concat(labelItems);
   const px = new Map<LabelItem, number[]>();
   for (const it of all) px.set(it, chart.convertToPixel({ gridIndex: 0 }, it.value) as number[]);
-  const sizeOf = (it: LabelItem) => (it === labelBase ? 26 : typeof it.symbolSize === 'number' ? it.symbolSize : 11);
+  const sizeOf = (it: LabelItem) => (typeof it.symbolSize === 'number' ? it.symbolSize : it === labelBase ? 15 : 11);
   const inRect = (b: Box) => b.x >= rect.x && b.y >= rect.y && b.x + b.w <= rect.x + rect.width && b.y + b.h <= rect.y + rect.height;
   type Box = { x: number; y: number; w: number; h: number; owner?: LabelItem };
   const hit = (a: Box, b: Box) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
@@ -655,9 +656,9 @@ function placeLabels() {
       boxes.push(ok);
       for (const g of group) placed.add(g);
       // position は点の外接矩形の左上からの相対
-      it.label = { ...(isBase ? {} : { rich: it.barRich ?? {} }), show: true, position: [ok.x - (x - s / 2), ok.y - (y - s / 2)], align: 'left', verticalAlign: 'top' };
+      it.label = { rich: it.barRich ?? {}, show: true, position: [ok.x - (x - s / 2), ok.y - (y - s / 2)], align: 'left', verticalAlign: 'top' };
     } else if (isBase) {
-      it.label = { show: true, position: 'top' };
+      it.label = { rich: it.barRich ?? {}, show: true, position: 'top' };
     }
   }
   for (const it of labelItems) if (!placed.has(it)) it.label = { rich: it.barRich ?? {}, show: false };
