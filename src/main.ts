@@ -25,6 +25,7 @@ interface State {
   mode: 'abs' | 'rel';
   logX: boolean;
   pareto: boolean;
+  labels: 'all' | 'pareto' | 'none';
   pinBase: boolean;
   base: string | null;
   detail: string | null;
@@ -45,6 +46,7 @@ const state: State = {
   mode: 'abs',
   logX: false,
   pareto: true,
+  labels: 'all',
   pinBase: true,
   base: null,
   detail: null,
@@ -77,9 +79,35 @@ const METRIC_LABELS: Record<string, string> = {
   openness_index: 'Openness Index',
   multilingual_index: 'Multilingual Index',
   decision_index: 'Decision Index',
-  gpqa_diamond_accuracy: 'GPQA Diamond 正答率',
-  tau_bench_verified_airline_accuracy: 'τ-bench (airline) 正答率',
+  gpqa_diamond_accuracy: 'GPQA Diamond 正答率 %',
+  tau_bench_verified_airline_accuracy: 'τ-bench airline 正答率 %',
 };
+/** 縦軸の指標が何を測るか（高いほど良い） */
+const METRIC_HELP: Record<string, string> = {
+  intelligence_index: '総合力。Artificial Analysis が複数の評価（推論・知識・数学・コーディングなど）をまとめた指数',
+  engineering_index: 'ソフトウェア・技術系の実務タスク。今のデータで「コーディング寄り」に一番近い指標',
+  coding_index: 'コーディング指数。Artificial Analysis が更新をやめた旧指標で、古いモデルにしか値が無い',
+  agentic_index: 'エージェント（ツールを使う多段タスク）指数。更新が止まった旧指標で、古いモデルにしか値が無い',
+  gpqa_diamond_accuracy: '大学院レベルの理科の難問（GPQA Diamond）の正答率。OpenRouter が自前で計測',
+  tau_bench_verified_airline_accuracy: 'ツール呼び出しで航空会社の窓口業務をこなす課題（τ-bench）の成功率。エージェント用途の目安。OpenRouter が自前で計測',
+  finance_and_accounting_index: '財務・会計の実務タスク',
+  strategy_and_ops_index: '経営戦略・業務運営の実務タスク',
+  legal_index: '法務の実務タスク',
+  healthcare_and_medical_index: '医療・ヘルスケアの実務タスク',
+  economics_index: '経済分析の実務タスク',
+  cyber_index: 'サイバーセキュリティのタスク',
+  multilingual_index: '多言語での性能',
+  openness_index: 'モデルの公開度（重みや学習情報の開示）。性能ではない',
+  decision_index: '意思決定タスク',
+};
+
+/** 0〜1 の正答率を % にそろえる（比は変わらない） */
+function toPercent(c: Catalog): Catalog {
+  for (const m of c.models)
+    for (const r of m.metrics) if (r.metric.endsWith('_accuracy') && r.score <= 1.000001) r.score = +(r.score * 100).toFixed(3);
+  return c;
+}
+
 const SOURCE_LABELS: Record<string, string> = { 'artificial-analysis': 'Artificial Analysis', openrouter: 'OpenRouter', sample: 'サンプル' };
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -118,6 +146,8 @@ function readUrl() {
   if (q.get('mode') === 'rel') state.mode = 'rel';
   if (q.get('log') === '1') state.logX = true;
   if (q.get('pareto') === '0') state.pareto = false;
+  const lbl = q.get('lbl');
+  if (lbl === 'pareto' || lbl === 'none') state.labels = lbl;
   state.query = q.get('q') ?? '';
   state.base = q.get('base');
 }
@@ -135,6 +165,7 @@ function writeUrl() {
   q.set('mode', state.mode);
   if (state.logX) q.set('log', '1');
   if (!state.pareto) q.set('pareto', '0');
+  if (state.labels !== 'all') q.set('lbl', state.labels);
   if (state.query) q.set('q', state.query);
   if (state.base) q.set('base', state.base);
   history.replaceState(null, '', `${location.pathname}?${q.toString()}${location.hash}`);
@@ -223,6 +254,8 @@ function renderMetricSelect(metrics: { key: MetricKey; count: number }[]) {
     return;
   }
   sel.disabled = false;
+  const p = state.metric ? parseMetricKey(state.metric) : null;
+  $('metricHelp').textContent = p ? `縦軸: ${METRIC_LABELS[p.metric] ?? p.metric} — ${METRIC_HELP[p.metric] ?? ''}（${SOURCE_LABELS[p.source] ?? p.source}）` : '';
   sel.innerHTML = metrics.map((m) => `<option value="${esc(m.key)}" ${m.key === state.metric ? 'selected' : ''}>${esc(metricLabel(m.key))}（${m.count}/${visible.length}件）</option>`).join('');
 }
 
@@ -315,7 +348,7 @@ function renderChart() {
         position: 'right',
         color: muted,
         fontSize: 11,
-        formatter: (p: { data: { row: Row; name: string } }) => (p.data.row.pareto && state.pareto ? p.data.name : ''),
+        formatter: (p: { data: { row: Row; name: string } }) => (state.labels === 'all' || (state.labels === 'pareto' && p.data.row.pareto) ? p.data.name : ''),
       },
       labelLayout: { hideOverlap: true },
     });
@@ -641,6 +674,7 @@ function bindControls() {
   );
   $<HTMLInputElement>('logX').addEventListener('change', (e) => { state.logX = (e.target as HTMLInputElement).checked; recompute(); });
   $<HTMLInputElement>('pareto').addEventListener('change', (e) => { state.pareto = (e.target as HTMLInputElement).checked; recompute(); });
+  $<HTMLSelectElement>('labels').addEventListener('change', (e) => { state.labels = (e.target as HTMLSelectElement).value as State['labels']; recompute(); });
   $<HTMLInputElement>('pinBase').addEventListener('change', (e) => { state.pinBase = (e.target as HTMLInputElement).checked; renderTable(); });
 
   const table = $('table');
@@ -697,6 +731,7 @@ function syncInputs() {
   $<HTMLInputElement>('query').value = state.query;
   $<HTMLInputElement>('logX').checked = state.logX;
   $<HTMLInputElement>('pareto').checked = state.pareto;
+  $<HTMLSelectElement>('labels').value = state.labels;
 }
 
 function exportCsv() {
@@ -727,7 +762,7 @@ function exportCsv() {
 // ---------- 起動 ----------
 async function start() {
   try {
-    catalog = await load();
+    catalog = toPercent(await load());
   } catch (e) {
     showLoadError(e);
     return;

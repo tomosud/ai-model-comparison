@@ -75,9 +75,17 @@
               </div>
               <label class="check"><input type="checkbox" id="logX" /> X 対数</label>
               <label class="check"><input type="checkbox" id="pareto" checked /> パレート線</label>
+              <label class="check">名前
+                <select id="labels" class="mini">
+                  <option value="all">全部（重なりは省略）</option>
+                  <option value="pareto">パレートのみ</option>
+                  <option value="none">出さない</option>
+                </select>
+              </label>
             </div>
           </div>
-          <p class="hint">左上ほど「安くて高スコア」。点をクリックするとそのモデルが基準になります。拡大は Ctrl + ホイールか下のスライダー。</p>
+          <p class="hint">左上ほど「安くて高スコア」。点をクリックするとそのモデルが基準になります。拡大は Ctrl + ホイールか下のスライダー。名前が出ていない点は、重なりを避けて省略したものです（点にマウスを乗せると名前と詳細が出ます）。</p>
+          <p class="hint metric-help" id="metricHelp"></p>
           <div id="chart" class="chart" role="img" aria-label="モデルごとの想定コストとスコアの散布図"></div>
           <p class="chart-note" id="chartNote"></p>
         </section>
