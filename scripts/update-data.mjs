@@ -61,6 +61,16 @@ async function fetchBenchmarks() {
   } catch (e) {
     return { records: null, status: 'error', error: String(e.message ?? e) };
   }
+  // Design Arena（コーディング部門）は無くても困らないので、失敗しても他は使う
+  try {
+    const resp = await getJson(`${API}/benchmarks?source=design-arena&arena=models&category=codecategories`, { auth: true, tries: 3 });
+    const recs = normalizeBenchmarkResponse(resp);
+    records.push(...recs);
+    metas.push({ source: 'design-arena', asOf: resp?.meta?.as_of ?? null, version: resp?.meta?.version ?? null, citation: resp?.meta?.citation ?? null, sourceUrl: resp?.meta?.source_url ?? null });
+    console.log(`design-arena: ${recs.length} records`);
+  } catch (e) {
+    console.warn(`design-arena skip: ${e.message}`);
+  }
   return { records, status: 'ok', metas };
 }
 

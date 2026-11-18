@@ -49,17 +49,23 @@ export function paretoFrontier(points: { cost: number; score: number }[]): Set<n
   return res;
 }
 
+/** Elo のような「差で見る」尺度は比をとっても意味が無いので、比と効率を出さない */
+export function isRatioMetric(metricKey: MetricKey | null): boolean {
+  return !metricKey || !parseMetricKey(metricKey).metric.endsWith('_elo');
+}
+
 export function buildRows(models: Model[], base: Model | null, metricKey: MetricKey | null, inputTokens: number, outputTokens: number): Row[] {
+  const ratioOk = isRatioMetric(metricKey);
   const baseCost = base ? scenarioCostUsd(base, inputTokens, outputTokens) : null;
   const baseMetric = base ? findMetric(base, metricKey) : null;
-  const baseScore = baseMetric?.score ?? null;
+  const baseScore = ratioOk ? baseMetric?.score ?? null : null;
   const baseSpd = baseScore !== null ? scorePerDollar(baseScore, baseCost) : null;
 
   const rows: Row[] = models.map((m) => {
     const cost = scenarioCostUsd(m, inputTokens, outputTokens);
     const metric = findMetric(m, metricKey);
     const score = metric?.score ?? null;
-    const spd = scorePerDollar(score, cost);
+    const spd = ratioOk ? scorePerDollar(score, cost) : null;
     return {
       model: m,
       cost,

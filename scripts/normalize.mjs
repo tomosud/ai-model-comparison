@@ -121,8 +121,16 @@ export function normalizeBenchmarkResponse(resp) {
         version,
         config: null,
       });
+    } else if (item.source === 'design-arena' && typeof item.category === 'string' && (item.arena ?? 'models') === 'models') {
+      // 人の投票による対戦。Elo（差で見る）と勝率（%）を別の指標として持つ
+      const cat = item.category.replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+      for (const [suffix, v] of [['elo', item.elo], ['win_rate', item.win_rate]]) {
+        const score = toNum(v);
+        if (score === null) continue;
+        out.push({ modelPermaslug: slug, source: 'design-arena', metric: `design_arena_${cat}_${suffix}`, score, evaluatedAt: asOf, version, config: null });
+      }
     }
-    // design-arena / search の形は指標の意味が異なるため初版では取り込まない
+    // search の形は評価条件が多様なため初版では取り込まない
   }
   return out;
 }

@@ -4,14 +4,14 @@ import { ScatterChart, LineChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, MarkLineComponent } from 'echarts/components';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import { buildRows, fmtNum, fmtRatio, fmtUsd, parseMetricKey, scenarioCostUsd, findMetric } from './lib/calc';
+import { buildRows, fmtNum, fmtRatio, fmtUsd, parseMetricKey, scenarioCostUsd, findMetric, isRatioMetric, metricKeyOf, ratio } from './lib/calc';
 import { availableMetrics, defaultBase, defaultMetric, EXTRA_PROVIDERS, filterModels, MAJOR_PROVIDERS } from './lib/select';
 import type { Catalog, MetricKey, Model, Row } from './lib/types';
 
 echarts.use([ScatterChart, LineChart, GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, MarkLineComponent, LabelLayout, CanvasRenderer]);
 
 // ---------- 状態 ----------
-type SortKey = 'provider' | 'name' | 'score' | 'relScore' | 'cost' | 'relCost' | 'relEfficiency' | 'speed' | 'relSpeed' | 'latency' | 'relLatency' | 'created';
+type SortKey = 'provider' | 'name' | 'score' | 'relScore' | 'cost' | 'relCost' | 'relEfficiency' | 'speed' | 'relSpeed' | 'latency' | 'relLatency' | 'created' | `m:${string}`;
 interface State {
   data: 'live' | 'sample';
   providers: string[];
@@ -26,6 +26,7 @@ interface State {
   logX: boolean;
   pareto: boolean;
   labels: 'all' | 'pareto' | 'none';
+  speedViz: 'bar' | 'size' | 'none';
   pinBase: boolean;
   base: string | null;
   detail: string | null;
@@ -47,6 +48,7 @@ const state: State = {
   logX: false,
   pareto: true,
   labels: 'all',
+  speedViz: 'bar',
   pinBase: true,
   base: null,
   detail: null,
@@ -58,6 +60,12 @@ let catalog: Catalog | null = null;
 let visible: Model[] = [];
 let rows: Row[] = [];
 let chart: echarts.ECharts | null = null;
+let lastAxisSig = '';
+
+function fitChart() {
+  if (!chart) return;
+  for (const i of [0, 1, 2]) chart.dispatchAction({ type: 'dataZoom', dataZoomIndex: i, start: 0, end: 100 });
+}
 
 const PROVIDER_NAMES: Record<string, string> = {
   openai: 'OpenAI', anthropic: 'Anthropic', google: 'Google', deepseek: 'DeepSeek', 'meta-llama': 'Meta', mistralai: 'Mistral', 'x-ai': 'xAI', qwen: 'Qwen',
@@ -81,6 +89,8 @@ const METRIC_LABELS: Record<string, string> = {
   decision_index: 'Decision Index',
   gpqa_diamond_accuracy: 'GPQA Diamond 正答率 %',
   tau_bench_verified_airline_accuracy: 'τ-bench airline 正答率 %',
+  design_arena_codecategories_elo: 'Design Arena コーディング Elo',
+  design_arena_codecategories_win_rate: 'Design Arena コーディング勝率 %',
 };
 /** 縦軸の指標が何を測るか（高いほど良い） */
 const METRIC_HELP: Record<string, string> = {
@@ -89,6 +99,8 @@ const METRIC_HELP: Record<string, string> = {
   coding_index: 'コーディング指数。Artificial Analysis が更新をやめた旧指標で、古いモデルにしか値が無い',
   agentic_index: 'エージェント（ツールを使う多段タスク）指数。更新が止まった旧指標で、古いモデルにしか値が無い',
   gpqa_diamond_accuracy: '大学院レベルの理科の難問（GPQA Diamond）の正答率。OpenRouter が自前で計測',
+  design_arena_codecategories_elo: 'Design Arena のコーディング部門。人が 2 つのモデルの成果物を見比べて投票した対戦の Elo。差で比べる尺度なので倍率（比）は出さない',
+  design_arena_codecategories_win_rate: 'Design Arena のコーディング部門での勝率。対戦相手の顔ぶれで変わるので目安',
   tau_bench_verified_airline_accuracy: 'ツール呼び出しで航空会社の窓口業務をこなす課題（τ-bench）の成功率。エージェント用途の目安。OpenRouter が自前で計測',
   finance_and_accounting_index: '財務・会計の実務タスク',
   strategy_and_ops_index: '経営戦略・業務運営の実務タスク',
@@ -108,7 +120,35 @@ function toPercent(c: Catalog): Catalog {
   return c;
 }
 
-const SOURCE_LABELS: Record<string, string> = { 'artificial-analysis': 'Artificial Analysis', openrouter: 'OpenRouter', sample: 'サンプル' };
+const SOURCE_LABELS: Record<string, string> = { 'artificial-analysis': 'Artificial Analysis', openrouter: 'OpenRouter', 'design-arena': 'Design Arena', sample: 'サンプル' };
+
+/** 表に並べて出す主な指標（用途別）。データにあるものだけ列になる */
+const KEY_METRICS: { metric: string; label: string; title: string }[] = [
+  { metric: 'intelligence_index', label: '総合比', title: 'Intelligence Index の基準比（総合力）' },
+  { metric: 'engineering_index', label: 'エンジニア比', title: 'Engineering Index の基準比（ソフトウェア・技術系の実務。コーディング寄り）' },
+  { metric: 'design_arena_codecategories_win_rate', label: 'コード勝率比', title: 'Design Arena コーディング部門の勝率の基準比（人の投票）' },
+  { metric: 'tau_bench_verified_airline_accuracy', label: 'エージェント比', title: 'τ-bench airline 正答率の基準比（ツールを使う多段タスク）' },
+  { metric: 'gpqa_diamond_accuracy', label: 'GPQA比', title: 'GPQA Diamond 正答率の基準比（難問の知識・推論）' },
+];
+let keyMetricKeys: { key: MetricKey; label: string; title: string }[] = [];
+
+function resolveKeyMetrics() {
+  keyMetricKeys = [];
+  for (const km of KEY_METRICS) {
+    for (const m of catalog?.models ?? []) {
+      const r = m.metrics.find((x) => x.metric === km.metric);
+      if (r) {
+        keyMetricKeys.push({ key: metricKeyOf(r), label: km.label, title: km.title });
+        break;
+      }
+    }
+  }
+}
+
+function keyRatio(m: Model, key: MetricKey): number | null {
+  const base = baseModel();
+  return base ? ratio(findMetric(m, key)?.score ?? null, findMetric(base, key)?.score ?? null) : null;
+}
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string);
@@ -148,6 +188,8 @@ function readUrl() {
   if (q.get('pareto') === '0') state.pareto = false;
   const lbl = q.get('lbl');
   if (lbl === 'pareto' || lbl === 'none') state.labels = lbl;
+  const spd = q.get('spd');
+  if (spd === 'size' || spd === 'none') state.speedViz = spd;
   state.query = q.get('q') ?? '';
   state.base = q.get('base');
 }
@@ -166,6 +208,7 @@ function writeUrl() {
   if (state.logX) q.set('log', '1');
   if (!state.pareto) q.set('pareto', '0');
   if (state.labels !== 'all') q.set('lbl', state.labels);
+  if (state.speedViz !== 'bar') q.set('spd', state.speedViz);
   if (state.query) q.set('q', state.query);
   if (state.base) q.set('base', state.base);
   history.replaceState(null, '', `${location.pathname}?${q.toString()}${location.hash}`);
@@ -264,6 +307,7 @@ function relModeReason(): string | null {
   const base = baseModel();
   if (!base) return '基準モデルが未選択です';
   const s = findMetric(base, state.metric)?.score ?? null;
+  if (!isRatioMetric(state.metric)) return 'Elo は差で比べる尺度なので比は出しません';
   if (s === null) return '基準モデルにこの指標のスコアがありません';
   if (s === 0) return '基準モデルのスコアが 0 のため比が計算できません';
   const c = scenarioCostUsd(base, state.inTok, state.outTok);
@@ -300,6 +344,9 @@ function renderChart() {
   if (noCost) notes.push(`価格不明 ${noCost} 件`);
   if (logDropped) notes.push(`対数軸のため無料 ${logDropped} 件を除外`);
   if (state.mode === 'rel' && reason) notes.push(`基準比モード不可: ${reason}`);
+  const maxSpeed = Math.max(0, ...pts.map((r) => r.model.throughputTps ?? 0));
+  if (maxSpeed > 0 && state.speedViz === 'bar') notes.push(`名前の下の棒 = 速度（最速 ${Math.round(maxSpeed)} tok/s を最長に）`);
+  if (maxSpeed > 0 && state.speedViz === 'size') notes.push('点の大きさ = 速度（白抜き = 未取得）');
   $('chartNote').textContent = notes.join(' ・ ');
 
   if (!pts.length) {
@@ -314,6 +361,11 @@ function renderChart() {
   if (!chart) {
     el.innerHTML = '';
     chart = echarts.init(el, undefined, { renderer: 'canvas' });
+    let raf = 0;
+    chart.on('datazoom', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(placeLabels);
+    });
     chart.on('click', (p) => {
       const id = (p.data as { id?: string } | undefined)?.id;
       if (id) setBase(id);
@@ -334,24 +386,57 @@ function renderChart() {
     g.push(r);
     groups.set(r.model.providerSlug, g);
   }
-  const point = (r: Row) => ({ id: r.model.id, value: [x(r), y(r)], name: shortName(r.model), row: r });
+  // 速度: 名前の下の棒の長さ、または点の大きさで表す（最速のモデルを最大に）
+  const maxTps = Math.max(0, ...pts.map((r) => r.model.throughputTps ?? 0));
+  const tpsOf = (r: Row) => (maxTps > 0 ? r.model.throughputTps : null);
+  const point = (r: Row) => {
+    const t = tpsOf(r);
+    const c = providerColor(r.model.providerSlug);
+    const item: LabelItem = { id: r.model.id, value: [x(r), y(r)], name: shortName(r.model).replace(/[{}|]/g, ''), row: r, itemStyle: { color: c } };
+    if (state.speedViz === 'size') {
+      item.symbolSize = t === null ? 8 : 7 + 17 * Math.sqrt(t / maxTps);
+      if (t === null) item.itemStyle = { color: 'transparent', borderColor: c, borderWidth: 1.5 };
+    } else if (state.speedViz === 'bar' && t !== null) {
+      item.barRich = { b: { width: Math.max(3, Math.round((60 * t) / maxTps)), height: 4, backgroundColor: c, borderRadius: 2 } };
+      item.label = { rich: item.barRich };
+    }
+    return item;
+  };
+  const labelText = (row: Row, name: string, prefix = '') => {
+    const t = tpsOf(row);
+    // 棒だけにして行の高さを抑える（数値はツールチップと表で見られる）
+    return state.speedViz === 'bar' && t !== null ? `{n|${prefix}${name}}\n{b|}` : `{n|${prefix}${name}}`;
+  };
+  const rich = { n: { color: muted, fontSize: 11 }, v: { color: muted, fontSize: 9, padding: [0, 0, 0, 2] }, b: { height: 4, width: 0 } };
   const series: Record<string, unknown>[] = [];
-  for (const [slug, list] of groups) {
+  labelItems = [];
+  labelBase = null;
+  // 凡例用の空シリーズ（色の見本だけ）。絞り込みはメーカーのチェックで行う
+  for (const slug of groups.keys()) series.push({ type: 'scatter', name: providerName(slug), data: [], itemStyle: { color: providerColor(slug) } });
+  // 全モデルを 1 つのシリーズにまとめる。ラベルの重なり回避はシリーズ内でしか効かないため
+  {
+    const list = [...groups.values()].flat();
+    labelItems = list.map(point);
     series.push({
+      id: 'models',
       type: 'scatter',
-      name: providerName(slug),
-      data: list.map(point),
+      name: 'モデル',
+      data: labelItems,
       symbolSize: 11,
-      itemStyle: { color: providerColor(slug), borderColor: surface, borderWidth: 1 },
+      itemStyle: { borderColor: surface, borderWidth: 1 },
       emphasis: { focus: 'self', label: { show: true }, itemStyle: { borderColor: text, borderWidth: 2 } },
+      // 名前の位置は placeLabels() が点ごとに決める（重なる場所には出さない）
       label: {
-        show: true,
+        show: false,
         position: 'right',
         color: muted,
         fontSize: 11,
-        formatter: (p: { data: { row: Row; name: string } }) => (state.labels === 'all' || (state.labels === 'pareto' && p.data.row.pareto) ? p.data.name : ''),
+        formatter: (p: { data: { row: Row; name: string } }) => labelText(p.data.row, p.data.name),
+        rich,
+        backgroundColor: surface,
+        padding: [1, 3],
+        borderRadius: 3,
       },
-      labelLayout: { hideOverlap: true },
     });
   }
   if (state.pareto) {
@@ -372,15 +457,17 @@ function renderChart() {
   const markLines: { xAxis?: number; yAxis?: number }[] = [];
   if (baseRow && baseRow.score !== null && baseRow.cost !== null && (!state.logX || x(baseRow) > 0)) {
     markLines.push({ xAxis: x(baseRow) }, { yAxis: y(baseRow) });
+    labelBase = point(baseRow);
     series.push({
+      id: 'base',
       type: 'scatter',
       name: '基準',
-      data: [point(baseRow)],
+      data: [labelBase],
       symbol: 'path://M50,3 L61,38 L98,38 L68,60 L79,95 L50,73 L21,95 L32,60 L2,38 L39,38 Z',
       symbolSize: 26,
       z: 10,
       itemStyle: { color: providerColor(baseRow.model.providerSlug), borderColor: text, borderWidth: 2 },
-      label: { show: true, position: 'top', color: text, fontWeight: 'bold', fontSize: 12, formatter: (p: { data: { name: string } }) => `基準: ${p.data.name}` },
+      label: { show: true, position: 'top', formatter: (p: { data: { row: Row; name: string } }) => labelText(p.data.row, p.data.name, '基準: '), rich: { ...rich, n: { color: text, fontWeight: 'bold', fontSize: 12 } }, backgroundColor: surface, padding: [1, 3], borderRadius: 3 },
       markLine: {
         silent: true,
         symbol: 'none',
@@ -390,6 +477,15 @@ function renderChart() {
       },
     });
   }
+
+  // 基準の変更などで描き直しても拡大位置を保つ。軸の意味が変わったら全体表示に戻す
+  const axisSig = `${state.metric}|${rel}|${state.logX}`;
+  let zoomKeep: { start?: number; end?: number }[] = [{}, {}];
+  if (axisSig === lastAxisSig) {
+    const dz = (chart.getOption().dataZoom ?? []) as { start?: number; end?: number }[];
+    zoomKeep = [0, 1].map((i) => (dz[i] ? { start: dz[i].start, end: dz[i].end } : {}));
+  }
+  lastAxisSig = axisSig;
 
   // 狭い画面では軸名を短くする（トークン数は入力欄に出ているので省く）
   const narrow = el.clientWidth < 560;
@@ -403,7 +499,7 @@ function renderChart() {
     {
       animation: false,
       textStyle: { fontFamily: getComputedStyle(document.body).fontFamily },
-      legend: { top: 0, textStyle: { color: text }, data: [...groups.keys()].map(providerName).concat(baseRow ? ['基準'] : []) },
+      legend: { top: 0, selectedMode: false, textStyle: { color: text }, data: [...groups.keys()].map(providerName).concat(baseRow ? ['基準'] : []) },
       grid: { left: 64, right: 28, top: 40, bottom: 76, containLabel: true },
       tooltip: {
         trigger: 'item',
@@ -436,14 +532,112 @@ function renderChart() {
         scale: true,
       },
       dataZoom: [
-        { type: 'inside', xAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: 'ctrl', moveOnMouseWheel: false },
-        { type: 'inside', yAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: 'ctrl', moveOnMouseWheel: false },
-        { type: 'slider', xAxisIndex: 0, height: 16, bottom: 6, filterMode: 'none', textStyle: { color: muted }, borderColor: border },
+        // ホイールで拡大縮小、ドラッグで移動。F キーか「フィット」で全体表示に戻す
+        { type: 'inside', xAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[0] },
+        { type: 'inside', yAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[1] },
+        { type: 'slider', xAxisIndex: 0, height: 16, bottom: 6, filterMode: 'none', textStyle: { color: muted }, borderColor: border, ...zoomKeep[0] },
       ],
       series,
     },
     { notMerge: true },
   );
+  placeLabels();
+}
+
+// ---------- 名前の配置 ----------
+type LabelItem = Record<string, unknown> & { value: number[]; name: string; row: Row; symbolSize?: number; barRich?: unknown };
+let labelItems: LabelItem[] = [];
+let labelBase: LabelItem | null = null;
+let measureCanvas: HTMLCanvasElement | null = null;
+
+function textWidth(text: string, font: string): number {
+  measureCanvas ??= document.createElement('canvas');
+  const c = measureCanvas.getContext('2d');
+  if (!c) return text.length * 7;
+  c.font = font;
+  return c.measureText(text).width;
+}
+
+/**
+ * 点ごとに右・左・上・下などの候補を順に試し、ほかの名前・点と重ならず、
+ * グラフの枠に収まる位置に名前を置く。どこにも置けない名前は出さない（マウスを乗せれば出る）。
+ * 基準 → パレート上 → スコアの高い順に優先する。拡大・移動のたびに置き直す。
+ */
+function placeLabels() {
+  if (!chart) return;
+  let rect: { x: number; y: number; width: number; height: number };
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rect = (chart as any).getModel().getComponent('grid', 0).coordinateSystem.getRect();
+  } catch {
+    return;
+  }
+  const family = getComputedStyle(document.body).fontFamily;
+  const all = (labelBase ? [labelBase] : []).concat(labelItems);
+  const px = new Map<LabelItem, number[]>();
+  for (const it of all) px.set(it, chart.convertToPixel({ gridIndex: 0 }, it.value) as number[]);
+  const sizeOf = (it: LabelItem) => (it === labelBase ? 26 : typeof it.symbolSize === 'number' ? it.symbolSize : 11);
+  const inRect = (b: Box) => b.x >= rect.x && b.y >= rect.y && b.x + b.w <= rect.x + rect.width && b.y + b.h <= rect.y + rect.height;
+  type Box = { x: number; y: number; w: number; h: number; owner?: LabelItem };
+  const hit = (a: Box, b: Box) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+  // 点そのものも障害物にする（名前で点を隠さない）
+  const boxes: Box[] = [];
+  for (const it of all) {
+    const [x, y] = px.get(it)!;
+    const r = sizeOf(it) / 2;
+    boxes.push({ x: x - r, y: y - r, w: r * 2, h: r * 2, owner: it });
+  }
+  const want = (it: LabelItem) => it === labelBase || state.labels === 'all' || (state.labels === 'pareto' && it.row.pareto);
+  const order = all.filter(want).sort((a, b) => {
+    const pa = a === labelBase ? 0 : a.row.pareto ? 1 : 2;
+    const pb = b === labelBase ? 0 : b.row.pareto ? 1 : 2;
+    return pa - pb || (px.get(a)![1] - px.get(b)![1]);
+  });
+  const placed = new Set<LabelItem>();
+  for (const it of order) {
+    const [x, y] = px.get(it)!;
+    const isBase = it === labelBase;
+    const text = (isBase ? '基準: ' : '') + it.name;
+    const w = textWidth(text, `${isBase ? 'bold 12px' : '11px'} ${family}`) + 7;
+    const h = (isBase ? 17 : 15) + (state.speedViz === 'bar' && it.barRich ? 6 : 0);
+    const r = sizeOf(it) / 2 + 3;
+    const cands: [number, number][] = [
+      [x + r, y - h / 2], // 右
+      [x - r - w, y - h / 2], // 左
+      [x - w / 2, y - r - h], // 上
+      [x - w / 2, y + r], // 下
+      [x + r, y - h - 1], // 右上
+      [x + r, y + 1], // 右下
+      [x - r - w, y - h - 1], // 左上
+      [x - r - w, y + 1], // 左下
+    ];
+    if (isBase) cands.unshift(cands.splice(2, 1)[0]); // 基準は上を優先
+    const s = sizeOf(it);
+    let ok: Box | null = null;
+    for (const [bx, by] of cands) {
+      const b: Box = { x: bx, y: by, w, h };
+      if (inRect(b) && !boxes.some((o) => o.owner !== it && hit(b, o))) {
+        ok = b;
+        break;
+      }
+    }
+    if (ok) {
+      boxes.push(ok);
+      placed.add(it);
+      // position は点の外接矩形の左上からの相対
+      it.label = { ...(isBase ? {} : { rich: it.barRich ?? {} }), show: true, position: [ok.x - (x - s / 2), ok.y - (y - s / 2)], align: 'left', verticalAlign: 'top' };
+    } else if (isBase) {
+      it.label = { show: true, position: 'top' };
+    }
+  }
+  for (const it of labelItems) if (!placed.has(it)) it.label = { rich: it.barRich ?? {}, show: false };
+  const upd: Record<string, unknown>[] = [{ id: 'models', data: labelItems }];
+  if (labelBase) upd.push({ id: 'base', data: [labelBase] });
+  chart.setOption({ series: upd });
+  const hidden = order.length - placed.size;
+  const note = $('labelNote');
+  if (note) note.textContent = hidden > 0 ? `名前が重なるため ${hidden} 件は省略（拡大すると出ます。点にマウスを乗せても見られます）` : '';
 }
 
 function tooltipHtml(r: Row): string {
@@ -528,11 +722,11 @@ function renderDetail() {
   $('detailSetBase')?.addEventListener('click', () => setBase(m.id));
 }
 
-const COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] = [
+const BASE_COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] = [
   { key: 'provider', label: 'メーカー', cls: 'l' },
   { key: 'name', label: 'モデル', cls: 'l col-model' },
   { key: 'score', label: 'スコア' },
-  { key: 'relScore', label: 'スコア比', title: '高いほど良い（数値の比であり知能の倍率ではない）' },
+  { key: 'relScore', label: 'スコア比', title: '選んでいる評価指標の基準比。高いほど良い（数値の比であり知能の倍率ではない）' },
   { key: 'cost', label: '想定コスト' },
   { key: 'relCost', label: 'コスト比', title: '低いほど安い' },
   { key: 'relEfficiency', label: 'コスト効率比', title: '高いほど効率的' },
@@ -543,7 +737,15 @@ const COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] =
   { key: 'created', label: '登録日' },
 ];
 
+/** 選択中の指標の列のあとに、用途別の主な指標の比を並べる */
+function columns() {
+  const extra = keyMetricKeys.filter((k) => k.key !== state.metric).map((k) => ({ key: `m:${k.key}` as SortKey, label: k.label, cls: '', title: `${k.title}。高いほど良い` }));
+  const i = BASE_COLUMNS.findIndex((c) => c.key === 'relEfficiency') + 1;
+  return [...BASE_COLUMNS.slice(0, i), ...extra, ...BASE_COLUMNS.slice(i)];
+}
+
 function sortValue(r: Row, k: SortKey): number | string | null {
+  if (k.startsWith('m:')) return keyRatio(r.model, k.slice(2));
   switch (k) {
     case 'provider': return providerName(r.model.providerSlug);
     case 'name': return shortName(r.model).toLowerCase();
@@ -558,6 +760,7 @@ function sortValue(r: Row, k: SortKey): number | string | null {
     case 'relLatency': return r.relLatency;
     case 'created': return r.model.createdAt;
   }
+  return null;
 }
 
 function sortedRows(): Row[] {
@@ -588,7 +791,9 @@ function ratioCell(v: number | null, better: 'high' | 'low', raw: string) {
 function renderTable() {
   const list = sortedRows();
   const base = baseModel();
-  const head = `<thead><tr>${COLUMNS.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${c.label}</th>`).join('')}</tr></thead>`;
+  const cols = columns();
+  const extraKeys = cols.filter((c) => c.key.startsWith('m:')).map((c) => c.key.slice(2));
+  const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${c.label}</th>`).join('')}</tr></thead>`;
   const body = list
     .map((r) => {
       const m = r.model;
@@ -602,6 +807,7 @@ function renderTable() {
         <td title="入力 $${fmtNum(m.inputUsdPerMillion, 4)} / 出力 $${fmtNum(m.outputUsdPerMillion, 4)} per 100万tok">${fmtUsd(r.cost)}</td>
         ${ratioCell(r.relCost, 'low', `${fmtUsd(r.cost)} ÷ ${fmtUsd(base ? scenarioCostUsd(base, state.inTok, state.outTok) : null)}`)}
         ${ratioCell(r.relEfficiency, 'high', r.scorePerDollar === null ? 'スコア/ドルが定義できません' : `スコア/ドル = ${r.scorePerDollar.toFixed(3)}`)}
+        ${extraKeys.map((k) => ratioCell(keyRatio(m, k), 'high', `${fmtNum(findMetric(m, k)?.score ?? null, 3)} ÷ ${fmtNum(base ? findMetric(base, k)?.score ?? null : null, 3)}`)).join('')}
         <td>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '<span class="na">未取得</span>'}</td>
         ${ratioCell(r.relSpeed, 'high', `${fmtNum(m.throughputTps, 1)} tok/s`)}
         <td>${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '<span class="na">未取得</span>'}</td>
@@ -610,7 +816,7 @@ function renderTable() {
       </tr>`;
     })
     .join('');
-  $('table').innerHTML = head + `<tbody>${body || `<tr><td colspan="${COLUMNS.length}" class="l na">条件に合うモデルがありません。</td></tr>`}</tbody>`;
+  $('table').innerHTML = head + `<tbody>${body || `<tr><td colspan="${cols.length}" class="l na">条件に合うモデルがありません。</td></tr>`}</tbody>`;
 }
 
 function renderFooter() {
@@ -620,7 +826,7 @@ function renderFooter() {
   $('footer').innerHTML = `
     <h3>出典とライセンス</h3>
     <p>モデル・価格: <a href="https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties" target="_blank" rel="noopener">OpenRouter Models API</a>（${esc(fmtDate(catalog.fetchedAt))} 取得）。価格は OpenRouter 経由の表示価格で、開発元と直接契約したときの価格とは異なる場合があります。</p>
-    <p>ベンチマーク: <a href="https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks" target="_blank" rel="noopener">OpenRouter Benchmarks API</a>${aa ? `（Artificial Analysis 指標は <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> による。as of ${esc(fmtDate(aa.asOf))}${aa.citation ? ` ・ ${esc(aa.citation)}` : ''}）` : ''}。Source: OpenRouter Data API (openrouter.ai/docs/cookbook/administration/data-api), as of ${esc(b.fetchedAt ?? catalog.fetchedAt)}. Licensed under CC BY 4.0.</p>
+    <p>ベンチマーク: <a href="https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks" target="_blank" rel="noopener">OpenRouter Benchmarks API</a>${aa ? `（Artificial Analysis 指標は <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> による。as of ${esc(fmtDate(aa.asOf))}${aa.citation ? ` ・ ${esc(aa.citation)}` : ''}）` : ''}。Source: OpenRouter Data API (openrouter.ai/docs/cookbook/administration/data-api), as of ${esc(b.fetchedAt ?? catalog.fetchedAt)}. Licensed under CC BY 4.0.${b.metas?.some((m) => m.source === 'design-arena') ? ' Design Arena の値は <a href="https://www.designarena.ai/" target="_blank" rel="noopener">Design Arena</a> による。' : ''}</p>
     <p>照合: ベンチマーク ${catalog.stats.benchmarkRecords} 件中 ${catalog.stats.benchmarkMatched} 件をモデル ID で照合。未一致 ${catalog.stats.benchmarkUnmatchedSlugs.length} 種（表示名では照合しません）。</p>
     <h3>計算方法</h3>
     <p>想定コスト = 入力単価 × 入力トークン ÷ 100万 + 出力単価 × 出力トークン ÷ 100万。各比 = 対象の値 ÷ 基準の値。基準が 0 / 不明のときは N/A。パレート最適 = スコアが同等以上かつコストが同等以下で、どちらかが厳密に良い他モデルが存在しないもの。</p>
@@ -676,6 +882,16 @@ function bindControls() {
   $<HTMLInputElement>('logX').addEventListener('change', (e) => { state.logX = (e.target as HTMLInputElement).checked; recompute(); });
   $<HTMLInputElement>('pareto').addEventListener('change', (e) => { state.pareto = (e.target as HTMLInputElement).checked; recompute(); });
   $<HTMLSelectElement>('labels').addEventListener('change', (e) => { state.labels = (e.target as HTMLSelectElement).value as State['labels']; recompute(); });
+  $<HTMLSelectElement>('speedViz').addEventListener('change', (e) => { state.speedViz = (e.target as HTMLSelectElement).value as State['speedViz']; recompute(); });
+  $('fitBtn').addEventListener('click', fitChart);
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName) || t.isContentEditable) return;
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      fitChart();
+    }
+  });
   $<HTMLInputElement>('pinBase').addEventListener('change', (e) => { state.pinBase = (e.target as HTMLInputElement).checked; renderTable(); });
 
   const table = $('table');
@@ -733,6 +949,7 @@ function syncInputs() {
   $<HTMLInputElement>('logX').checked = state.logX;
   $<HTMLInputElement>('pareto').checked = state.pareto;
   $<HTMLSelectElement>('labels').value = state.labels;
+  $<HTMLSelectElement>('speedViz').value = state.speedViz;
 }
 
 function exportCsv() {
@@ -742,12 +959,12 @@ function exportCsv() {
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const num = (v: number | null, d = 4) => (v === null ? null : +v.toFixed(d));
-  const header = ['provider', 'model_id', 'model_name', 'metric', 'metric_source', 'evaluated_at', 'score', 'relative_score', 'input_usd_per_million', 'output_usd_per_million', 'scenario_cost_usd', 'relative_cost', 'relative_efficiency', 'throughput_tps', 'relative_speed', 'latency_s', 'relative_latency', 'is_base', 'pareto'];
+  const header = ['provider', 'model_id', 'model_name', 'metric', 'metric_source', 'evaluated_at', 'score', 'relative_score', 'input_usd_per_million', 'output_usd_per_million', 'scenario_cost_usd', 'relative_cost', 'relative_efficiency', 'throughput_tps', 'relative_speed', 'latency_s', 'relative_latency', 'is_base', 'pareto', ...keyMetricKeys.map((k) => `relative_${parseMetricKey(k.key).metric}`)];
   const lines = [
     `# base=${base?.id ?? 'none'} input_tokens=${state.inTok} output_tokens=${state.outTok} metric=${state.metric ?? 'none'} data_fetched_at=${catalog?.fetchedAt ?? ''}${catalog?.isSample ? ' SAMPLE_DATA' : ''}`,
     header.join(','),
     ...sortedRows().map((r) =>
-      [providerName(r.model.providerSlug), r.model.id, shortName(r.model), r.metric?.metric, r.metric?.source, r.metric?.evaluatedAt, r.score, num(r.relScore), r.model.inputUsdPerMillion, r.model.outputUsdPerMillion, num(r.cost, 6), num(r.relCost), num(r.relEfficiency), r.model.throughputTps, num(r.relSpeed), r.model.latencySeconds, num(r.relLatency), base?.id === r.model.id, r.pareto]
+      [providerName(r.model.providerSlug), r.model.id, shortName(r.model), r.metric?.metric, r.metric?.source, r.metric?.evaluatedAt, r.score, num(r.relScore), r.model.inputUsdPerMillion, r.model.outputUsdPerMillion, num(r.cost, 6), num(r.relCost), num(r.relEfficiency), r.model.throughputTps, num(r.relSpeed), r.model.latencySeconds, num(r.relLatency), base?.id === r.model.id, r.pareto, ...keyMetricKeys.map((k) => num(keyRatio(r.model, k.key)))]
         .map(cell)
         .join(','),
     ),
@@ -773,6 +990,7 @@ async function start() {
   if (!state.metric) state.metric = defaultMetric(pre);
   if (!state.base || !catalog.models.some((m) => m.id === state.base)) state.base = defaultBase(pre, state.metric)?.id ?? null;
   state.detail = null;
+  resolveKeyMetrics();
   renderMeta();
   renderProviders();
   renderFooter();
