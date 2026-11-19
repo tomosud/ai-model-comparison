@@ -25,6 +25,18 @@ export interface Model {
   latencySeconds: number | null;
   speedMeasuredAt: string | null;
   metrics: MetricRecord[];
+  /** OpenRouter での利用量（上位 50 に入ったモデルのみ） */
+  usage?: Usage | null;
+}
+
+export interface Usage {
+  tokens7d: number;
+  prev7d: number | null;
+  share7d: number | null;
+  rank7d: number | null;
+  daily: number[];
+  codeTokens: number | null;
+  codeRank: number | null;
 }
 
 export interface BenchmarkMeta {
@@ -44,6 +56,7 @@ export interface Catalog {
   sources: {
     models: { url: string; fetchedAt: string | null };
     benchmarks: { status: string; error?: string; fetchedAt?: string | null; metas: BenchmarkMeta[] };
+    rankings?: { status: string; error?: string; fetchedAt?: string | null; asOf?: string | null; codeAsOf?: string | null; days: string[]; codeWeek: string | null; total7d: number | null; matched: number };
   };
   stats: {
     modelCount: number;

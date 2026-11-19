@@ -6,12 +6,12 @@ import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { buildRows, fmtNum, fmtRatio, fmtUsd, parseMetricKey, scenarioCostUsd, findMetric, isRatioMetric, metricKeyOf, ratio } from './lib/calc';
 import { availableMetrics, defaultBase, defaultMetric, EXTRA_PROVIDERS, filterModels, MAJOR_PROVIDERS } from './lib/select';
-import type { Catalog, MetricKey, Model, Row } from './lib/types';
+import type { Catalog, MetricKey, Model, Row, Usage } from './lib/types';
 
 echarts.use([ScatterChart, LineChart, GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, MarkLineComponent, LabelLayout, CanvasRenderer]);
 
 // ---------- 状態 ----------
-type SortKey = 'provider' | 'name' | 'score' | 'relScore' | 'cost' | 'relCost' | 'relEfficiency' | 'speed' | 'relSpeed' | 'latency' | 'relLatency' | 'created' | `m:${string}`;
+type SortKey = 'provider' | 'name' | 'score' | 'relScore' | 'cost' | 'relCost' | 'relEfficiency' | 'speed' | 'relSpeed' | 'latency' | 'relLatency' | 'usage' | 'created' | `m:${string}`;
 interface State {
   data: 'live' | 'sample';
   providers: string[];
@@ -162,6 +162,28 @@ const metricLabel = (key: MetricKey | null) => {
 };
 const fmtDate = (iso: string | null | undefined) => (iso ? new Date(iso).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'N/A');
 const fmtDay = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : 'N/A');
+/** トークン数を 1.2T / 340B / 12M の形に */
+const fmtTok = (v: number | null | undefined) => {
+  if (v === null || v === undefined) return 'N/A';
+  for (const [d, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']] as const) if (v >= d) return `${(v / d).toFixed(v >= d * 100 ? 0 : 1)}${u}`;
+  return String(Math.round(v));
+};
+/** 前の 7 日からの増減（比）。前週が 0 / 不明なら null */
+const usageTrend = (u: Usage | null | undefined) => (u && u.prev7d ? u.tokens7d / u.prev7d - 1 : null);
+const hasRankings = () => catalog?.sources.rankings?.status === 'ok' || catalog?.sources.rankings?.status === 'stale';
+function trendHtml(t: number | null) {
+  if (t === null) return '';
+  const cls = Math.abs(t) < 0.005 ? 'na' : t > 0 ? 'good' : 'bad';
+  return `<span class="trend ${cls}">${t > 0 ? '▲' : t < 0 ? '▼' : '＝'}${Math.abs(t * 100) >= 999 ? '999+' : Math.abs(t * 100).toFixed(0)}%</span>`;
+}
+/** 日ごとの利用量の小さな折れ線 */
+function sparkline(vals: number[]) {
+  const max = Math.max(0, ...vals);
+  if (vals.length < 2 || max <= 0) return '';
+  const W = 100, H = 28;
+  const pts = vals.map((v, i) => `${((i / (vals.length - 1)) * W).toFixed(1)},${(H - 2 - (v / max) * (H - 4)).toFixed(1)}`);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,${H} ${pts.join(' ')} ${W},${H}" class="spark-area"/><polyline points="${pts.join(' ')}" class="spark-line"/></svg>`;
+}
 const shortName = (m: Model) => m.name.replace(/^[^:]+:\s*/, '');
 
 // ---------- URL 状態 ----------
@@ -286,6 +308,7 @@ function renderPicks() {
     [ICON.score, 'スコアが最高', best((r) => r.score, 1), (v) => fmtNum(v, 1)],
     [ICON.cost, '想定コストが最安（有料）', best((r) => (r.score !== null && r.cost !== null && r.cost > 0 ? r.cost : null), -1), (v) => fmtUsd(v)],
     [ICON.speed, '速度が最速', best((r) => r.model.throughputTps, 1), (v) => `${fmtNum(v, 0)} tok/s`],
+    [ICON.usage, 'いちばん使われている', best((r) => (r.model.usage?.rank7d ? r.model.usage.tokens7d : null), 1), (v) => `${fmtTok(v)}/7日`],
   ];
   el.innerHTML = `<div class="f-label">表示中のいちばん</div>` + items
     .map(([ic, label, b, f]) => b
@@ -777,8 +800,11 @@ function renderDetail() {
       <dt>想定コスト</dt><dd>${fmtUsd(r.cost)}</dd>
       <dt>コンテキスト</dt><dd>${m.contextLength !== null ? m.contextLength.toLocaleString() : 'N/A'}</dd>
       <dt>速度 / 遅延</dt><dd>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '未取得'} / ${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '未取得'}</dd>
+      <dt>利用量</dt><dd>${usageText(m.usage)}</dd>
+      ${m.usage?.codeRank ? `<dt>コーディング</dt><dd>#${m.usage.codeRank}（${fmtTok(m.usage.codeTokens)} / 週・推定）</dd>` : ''}
       ${m.hiddenReasons.length ? `<dt>既定で非表示</dt><dd>${esc(m.hiddenReasons.join(', '))}</dd>` : ''}
     </dl>
+    ${m.usage && m.usage.daily.some((v) => v > 0) ? `<div class="label-small" style="margin-top:8px">${ICON.usage}OpenRouter での利用量（日ごと、直近 ${m.usage.daily.length} 日）</div>${sparkline(m.usage.daily)}` : ''}
     <div class="label-small" style="margin-top:10px">基準比（縦線 = 1.00×、緑 = 基準より良い）</div>
     <div class="bars" aria-label="基準比（縦線 = 1.00×）">
       ${bar('スコア', r.relScore, 'high', ICON.score)}
@@ -793,6 +819,12 @@ function renderDetail() {
   $('detailSetBase')?.addEventListener('click', () => setBase(m.id));
 }
 
+function usageText(u: Usage | null | undefined) {
+  if (!hasRankings()) return '<span class="na">未取得</span>';
+  if (!u || !u.rank7d) return '<span class="na">上位 50 圏外</span>';
+  return `<b>#${u.rank7d}</b> ・ ${fmtTok(u.tokens7d)} tok / 7日${u.share7d !== null ? `（全体の ${(u.share7d * 100).toFixed(1)}%）` : ''} ${trendHtml(usageTrend(u))}`;
+}
+
 // 量の種類ごとの小さなアイコン（色は CSS の .ic-* で付ける）
 const svg = (cls: string, d: string) => `<svg class="ic ${cls}" viewBox="0 0 16 16" aria-hidden="true">${d}</svg>`;
 const ICON = {
@@ -802,11 +834,12 @@ const ICON = {
   eff: svg('ic-eff', '<path d="M2 13l4-4 3 2.5L14 5M10.5 5H14v3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'),
   speed: svg('ic-speed', '<path d="M9 1L3 9h4.5L6.5 15 13 6.5H8.5z" fill="currentColor"/>'),
   latency: svg('ic-lat', '<circle cx="8" cy="9" r="5.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.8V9l2 1.6M6.3 1.5h3.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'),
+  usage: svg('ic-use', '<path d="M2.5 14V9.5M6.2 14V6M9.8 14V8M13.5 14V2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'),
   date: svg('ic-date', '<rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>'),
 };
 const COL_ICON: Partial<Record<string, string>> = {
   score: ICON.score, relScore: ICON.score, cost: ICON.cost, relCost: ICON.cost, relEfficiency: ICON.eff,
-  speed: ICON.speed, relSpeed: ICON.speed, latency: ICON.latency, relLatency: ICON.latency, created: ICON.date,
+  speed: ICON.speed, relSpeed: ICON.speed, latency: ICON.latency, relLatency: ICON.latency, usage: ICON.usage, created: ICON.date,
 };
 
 const BASE_COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] = [
@@ -821,6 +854,7 @@ const BASE_COLUMNS: { key: SortKey; label: string; cls?: string; title?: string 
   { key: 'relSpeed', label: '速度比', title: '高いほど速い' },
   { key: 'latency', label: '遅延' },
   { key: 'relLatency', label: '遅延比', title: '低いほど良い' },
+  { key: 'usage', label: '利用量', title: 'OpenRouter での直近 7 日の利用トークン数と順位（上位 50 のみ）。▲▼ は前の 7 日との比較' },
   { key: 'created', label: '登録日' },
 ];
 
@@ -845,6 +879,7 @@ function sortValue(r: Row, k: SortKey): number | string | null {
     case 'relSpeed': return r.relSpeed;
     case 'latency': return r.model.latencySeconds;
     case 'relLatency': return r.relLatency;
+    case 'usage': return r.model.usage?.rank7d ? r.model.usage.tokens7d : null;
     case 'created': return r.model.createdAt;
   }
   return null;
@@ -885,6 +920,8 @@ function renderTable() {
   const mCost = maxOf((r) => r.cost);
   const mTps = maxOf((r) => r.model.throughputTps);
   const mLat = maxOf((r) => r.model.latencySeconds);
+  const mUse = maxOf((r) => r.model.usage?.tokens7d ?? null);
+  const ranked = hasRankings();
   const db = (v: number | null, max: number, kind: string) => (v === null || max <= 0 ? '' : ` class="db db-${kind}" style="--w:${Math.max(2, (100 * v) / max).toFixed(1)}%"`);
   const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${COL_ICON[c.key] ?? ''}${c.label}</th>`).join('')}</tr></thead>`;
   const body = list
@@ -905,11 +942,20 @@ function renderTable() {
         ${ratioCell(r.relSpeed, 'high', `${fmtNum(m.throughputTps, 1)} tok/s`)}
         <td${db(m.latencySeconds, mLat, 'lat')}>${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '<span class="na">未取得</span>'}</td>
         ${ratioCell(r.relLatency, 'low', `${fmtNum(m.latencySeconds, 3)} s`)}
+        <td${db(m.usage?.rank7d ? m.usage.tokens7d : null, mUse, 'use')}>${m.usage?.rank7d ? `<span class="rank">#${m.usage.rank7d}</span>${fmtTok(m.usage.tokens7d)}${trendHtml(usageTrend(m.usage))}` : `<span class="na">${ranked ? '圏外' : '未取得'}</span>`}</td>
         <td>${esc(fmtDay(m.createdAt))}</td>
       </tr>`;
     })
     .join('');
   $('table').innerHTML = head + `<tbody>${body || `<tr><td colspan="${cols.length}" class="l na">条件に合うモデルがありません。</td></tr>`}</tbody>`;
+}
+
+function renderRankSource() {
+  const k = catalog?.sources.rankings;
+  if (!k || k.status === 'none') return '';
+  if (k.status !== 'ok' && k.status !== 'stale') return `<p>利用量: 未取得（${esc(k.error ?? k.status)}）</p>`;
+  const days = k.days.length ? `${k.days[0]} 〜 ${k.days[k.days.length - 1]}` : '';
+  return `<p>利用量: <a href="https://openrouter.ai/docs/api/api-reference/datasets/get-rankings-daily" target="_blank" rel="noopener">OpenRouter Rankings API</a>（日ごとの上位 50 モデルの入出力トークン数。${esc(days)}。<code>:free</code> などの変種は合算。コーディングは programming 用途の ${esc(k.codeWeek ?? '')} 週の推定値）。トークン数はメーカーごとの数え方で、モデル間で厳密には比べられません。${k.status === 'stale' ? '今回は取得に失敗したため前回の値です。' : ''} Source: OpenRouter (openrouter.ai/rankings), as of ${esc(k.asOf ?? k.fetchedAt ?? '')}. Licensed under CC BY 4.0.</p>`;
 }
 
 function renderFooter() {
@@ -920,6 +966,7 @@ function renderFooter() {
     <h3>出典とライセンス</h3>
     <p>モデル・価格: <a href="https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties" target="_blank" rel="noopener">OpenRouter Models API</a>（${esc(fmtDate(catalog.fetchedAt))} 取得）。価格は OpenRouter 経由の表示価格で、開発元と直接契約したときの価格とは異なる場合があります。</p>
     <p>ベンチマーク: <a href="https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks" target="_blank" rel="noopener">OpenRouter Benchmarks API</a>${aa ? `（Artificial Analysis 指標は <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> による。as of ${esc(fmtDate(aa.asOf))}${aa.citation ? ` ・ ${esc(aa.citation)}` : ''}）` : ''}。Source: OpenRouter Data API (openrouter.ai/docs/cookbook/administration/data-api), as of ${esc(b.fetchedAt ?? catalog.fetchedAt)}. Licensed under CC BY 4.0.${b.metas?.some((m) => m.source === 'design-arena') ? ' Design Arena の値は <a href="https://www.designarena.ai/" target="_blank" rel="noopener">Design Arena</a> による。' : ''}</p>
+    ${renderRankSource()}
     <p>照合: ベンチマーク ${catalog.stats.benchmarkRecords} 件中 ${catalog.stats.benchmarkMatched} 件をモデル ID で照合。未一致 ${catalog.stats.benchmarkUnmatchedSlugs.length} 種（表示名では照合しません）。</p>
     <h3>計算方法</h3>
     <p>想定コスト = 入力単価 × 入力トークン ÷ 100万 + 出力単価 × 出力トークン ÷ 100万。各比 = 対象の値 ÷ 基準の値。基準が 0 / 不明のときは N/A。パレート最適 = スコアが同等以上かつコストが同等以下で、どちらかが厳密に良い他モデルが存在しないもの。</p>
@@ -1102,12 +1149,12 @@ function exportCsv() {
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const num = (v: number | null, d = 4) => (v === null ? null : +v.toFixed(d));
-  const header = ['provider', 'model_id', 'model_name', 'metric', 'metric_source', 'evaluated_at', 'score', 'relative_score', 'input_usd_per_million', 'output_usd_per_million', 'scenario_cost_usd', 'relative_cost', 'relative_efficiency', 'throughput_tps', 'relative_speed', 'latency_s', 'relative_latency', 'is_base', 'pareto', ...keyMetricKeys.map((k) => `relative_${parseMetricKey(k.key).metric}`)];
+  const header = ['provider', 'model_id', 'model_name', 'metric', 'metric_source', 'evaluated_at', 'score', 'relative_score', 'input_usd_per_million', 'output_usd_per_million', 'scenario_cost_usd', 'relative_cost', 'relative_efficiency', 'throughput_tps', 'relative_speed', 'latency_s', 'relative_latency', 'is_base', 'pareto', 'usage_rank_7d', 'usage_tokens_7d', 'usage_prev_7d', 'code_rank_week', ...keyMetricKeys.map((k) => `relative_${parseMetricKey(k.key).metric}`)];
   const lines = [
     `# base=${base?.id ?? 'none'} input_tokens=${state.inTok} output_tokens=${state.outTok} metric=${state.metric ?? 'none'} data_fetched_at=${catalog?.fetchedAt ?? ''}${catalog?.isSample ? ' SAMPLE_DATA' : ''}`,
     header.join(','),
     ...sortedRows().map((r) =>
-      [providerName(r.model.providerSlug), r.model.id, shortName(r.model), r.metric?.metric, r.metric?.source, r.metric?.evaluatedAt, r.score, num(r.relScore), r.model.inputUsdPerMillion, r.model.outputUsdPerMillion, num(r.cost, 6), num(r.relCost), num(r.relEfficiency), r.model.throughputTps, num(r.relSpeed), r.model.latencySeconds, num(r.relLatency), base?.id === r.model.id, r.pareto, ...keyMetricKeys.map((k) => num(keyRatio(r.model, k.key)))]
+      [providerName(r.model.providerSlug), r.model.id, shortName(r.model), r.metric?.metric, r.metric?.source, r.metric?.evaluatedAt, r.score, num(r.relScore), r.model.inputUsdPerMillion, r.model.outputUsdPerMillion, num(r.cost, 6), num(r.relCost), num(r.relEfficiency), r.model.throughputTps, num(r.relSpeed), r.model.latencySeconds, num(r.relLatency), base?.id === r.model.id, r.pareto, r.model.usage?.rank7d ?? null, r.model.usage?.tokens7d ?? null, r.model.usage?.prev7d ?? null, r.model.usage?.codeRank ?? null, ...keyMetricKeys.map((k) => num(keyRatio(r.model, k.key)))]
         .map(cell)
         .join(','),
     ),

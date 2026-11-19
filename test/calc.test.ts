@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRows, fmtRatio, paretoFrontier, ratio, scenarioCostUsd, scorePerDollar } from '../src/lib/calc';
 import type { Model } from '../src/lib/types';
-import { attachMetrics, normalizeBenchmarkResponse, normalizeModel, perTokenToPerMillion, medianP50 } from '../scripts/normalize.mjs';
+import { attachMetrics, attachUsage, buildUsage, normalizeBenchmarkResponse, normalizeModel, perTokenToPerMillion, medianP50 } from '../scripts/normalize.mjs';
 
 function model(id: string, inp: number | null, out: number | null, score: number | null, tps: number | null = null): Model {
   return {
@@ -145,5 +145,41 @@ describe('正規化', () => {
   it('速度は p50 の中央値', () => {
     expect(medianP50([{ t: { p50: 10 } }, { t: { p50: 30 } }, { t: null }], 't')).toBe(20);
     expect(medianP50([{ t: null }], 't')).toBeNull();
+  });
+});
+
+describe('利用量ランキング', () => {
+  const day = (i: number) => `2026-01-${String(i + 1).padStart(2, '0')}`;
+  const daily = {
+    data: Array.from({ length: 14 }, (_, i) => [
+      { date: day(i), model_permaslug: 'a/x-1', total_tokens: String(i < 7 ? 100 : 200) },
+      { date: day(i), model_permaslug: 'a/x-1:free', total_tokens: '50' },
+      { date: day(i), model_permaslug: 'b/y', total_tokens: '300' },
+      { date: day(i), model_permaslug: 'other', total_tokens: '450' },
+    ]).flat(),
+    meta: { end_date: day(13) },
+  };
+  const code = {
+    data: [
+      { date: '2025-12-29', model_permaslug: 'b/y', total_tokens: '9' },
+      { date: '2026-01-05', model_permaslug: 'a/x-1', total_tokens: '70' },
+      { date: '2026-01-05', model_permaslug: 'b/y', total_tokens: '30' },
+      { date: '2026-01-12', model_permaslug: 'b/y', total_tokens: '999' },
+    ],
+    meta: { end_date: day(13) },
+  };
+  it('変種を合算し、7 日の順位・前週比・占有率・締まった週のコーディング順位を出す', () => {
+    const u = buildUsage(daily, code);
+    expect(u.days.length).toBe(14);
+    const x = u.bySlug['a/x-1'];
+    expect(x.tokens7d).toBe(7 * 250);
+    expect(x.prev7d).toBe(7 * 150);
+    expect(x.rank7d).toBe(2);
+    expect(u.bySlug['b/y'].rank7d).toBe(1);
+    expect(x.share7d).toBeCloseTo(250 / 1000);
+    expect(u.codeWeek).toBe('2026-01-05'); // 01-12 の週は 01-14 時点で途中
+    expect(x.codeRank).toBe(1);
+    const ms = [normalizeModel({ id: 'a/x', canonical_slug: 'a/x-1', name: 'x', pricing: {} }), normalizeModel({ id: 'a/x:free', canonical_slug: 'a/x-1', name: 'x', pricing: {} })].filter(Boolean);
+    expect(attachUsage(ms as any, u.bySlug)).toBe(2);
   });
 });

@@ -4,12 +4,13 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildCatalog, normalizeBenchmarkResponse, medianP50, normalizeModel } from './normalize.mjs';
+import { buildCatalog, buildUsage, normalizeBenchmarkResponse, medianP50, normalizeModel } from './normalize.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA_DIR = resolve(ROOT, 'public/data');
 const CATALOG = resolve(DATA_DIR, 'catalog.json');
 const BENCH_CACHE = resolve(DATA_DIR, 'benchmarks.json');
+const RANK_CACHE = resolve(DATA_DIR, 'rankings.json');
 const API = 'https://openrouter.ai/api/v1';
 const KEY = process.env.OPENROUTER_API_KEY?.trim() || null;
 const SPEED_PROVIDERS = new Set(['openai', 'anthropic', 'google', 'deepseek', 'meta-llama', 'mistralai', 'x-ai', 'qwen']);
@@ -72,6 +73,27 @@ async function fetchBenchmarks() {
     console.warn(`design-arena skip: ${e.message}`);
   }
   return { records, status: 'ok', metas };
+}
+
+/** 利用量ランキング（日次の直近 5 週 + プログラミング用途の週次）。失敗したら null */
+async function fetchRankings() {
+  if (!KEY) return { status: 'no_key', error: 'OPENROUTER_API_KEY が未設定' };
+  const ymd = (d) => d.toISOString().slice(0, 10);
+  const ago = (k) => ymd(new Date(Date.now() - k * 86_400_000));
+  try {
+    const daily = await getJson(`${API}/datasets/rankings-daily?period=day&start_date=${ago(35)}`, { auth: true, tries: 3 });
+    await sleep(2500);
+    let code = null;
+    try {
+      code = await getJson(`${API}/datasets/rankings-daily?period=week&category=programming&start_date=${ago(35)}`, { auth: true, tries: 3 });
+    } catch (e) {
+      console.warn(`rankings programming skip: ${e.message}`);
+    }
+    if (!Array.isArray(daily?.data) || !daily.data.length) throw new Error('rankings-daily が空です');
+    return { status: 'ok', daily, code };
+  } catch (e) {
+    return { status: 'error', error: String(e.message ?? e) };
+  }
 }
 
 /** 主要メーカーのテキストモデルだけ、エンドポイントの速度・遅延を取る（キーがある時のみ） */
@@ -145,11 +167,25 @@ async function main() {
     }
   }
 
-  const catalog = buildCatalog({ modelsResp, benchmarkRecords: records, benchmarkStatus, speeds, fetchedAt });
+  const rk = await fetchRankings();
+  let rankRaw = null;
+  let rankingsStatus;
+  if (rk.status === 'ok') {
+    rankRaw = { fetchedAt, daily: rk.daily, code: rk.code };
+    await writeFile(RANK_CACHE, JSON.stringify(rankRaw));
+    rankingsStatus = { status: 'ok', fetchedAt, asOf: rk.daily?.meta?.as_of ?? null, codeAsOf: rk.code?.meta?.as_of ?? null };
+  } else {
+    rankRaw = await readJson(RANK_CACHE);
+    rankingsStatus = { status: rankRaw ? 'stale' : rk.status, error: rk.error, fetchedAt: rankRaw?.fetchedAt ?? null, asOf: rankRaw?.daily?.meta?.as_of ?? null, codeAsOf: rankRaw?.code?.meta?.as_of ?? null };
+    console.warn(`ランキング: ${rk.error}。${rankRaw ? `前回 (${rankRaw.fetchedAt}) の値を使います` : '利用量なしで出力します'}`);
+  }
+  const usage = rankRaw ? buildUsage(rankRaw.daily, rankRaw.code) : null;
+
+  const catalog = buildCatalog({ modelsResp, benchmarkRecords: records, benchmarkStatus, speeds, fetchedAt, usage, rankingsStatus });
   await mkdir(DATA_DIR, { recursive: true });
   await writeFile(CATALOG, JSON.stringify(catalog));
   const s = catalog.stats;
-  console.log(`catalog.json: models=${s.modelCount} benchmarkRecords=${s.benchmarkRecords} matched=${s.benchmarkMatched} unmatchedSlugs=${s.benchmarkUnmatchedSlugs.length} speeds=${Object.keys(speeds).length}`);
+  console.log(`catalog.json: models=${s.modelCount} benchmarkRecords=${s.benchmarkRecords} matched=${s.benchmarkMatched} unmatchedSlugs=${s.benchmarkUnmatchedSlugs.length} speeds=${Object.keys(speeds).length} usage=${catalog.sources.rankings.matched}`);
   if (s.benchmarkUnmatchedSlugs.length) console.log(`未一致 slug (先頭20): ${s.benchmarkUnmatchedSlugs.slice(0, 20).join(', ')}`);
 }
 

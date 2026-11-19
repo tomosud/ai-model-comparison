@@ -72,6 +72,7 @@ export function normalizeModel(raw) {
     latencySeconds: null,
     speedMeasuredAt: null,
     metrics: [],
+    usage: null,
   };
 }
 
@@ -187,10 +188,11 @@ export function medianP50(endpoints, field) {
 }
 
 /** 生データ一式から catalog を作る。生データが壊れていても落ちない */
-export function buildCatalog({ modelsResp, benchmarkRecords, benchmarkStatus, speeds, fetchedAt }) {
+export function buildCatalog({ modelsResp, benchmarkRecords, benchmarkStatus, speeds, fetchedAt, usage = null, rankingsStatus = null }) {
   const raw = Array.isArray(modelsResp?.data) ? modelsResp.data : [];
   const models = raw.map(normalizeModel).filter(Boolean);
   const join = attachMetrics(models, benchmarkRecords ?? []);
+  const usageMatched = usage ? attachUsage(models, usage.bySlug) : 0;
   for (const m of models) {
     const s = speeds?.[m.id];
     if (s) {
@@ -208,6 +210,9 @@ export function buildCatalog({ modelsResp, benchmarkRecords, benchmarkStatus, sp
     sources: {
       models: { url: 'https://openrouter.ai/api/v1/models', license: 'OpenRouter', fetchedAt },
       benchmarks: benchmarkStatus,
+      rankings: rankingsStatus
+        ? { ...rankingsStatus, days: usage?.days ?? [], codeWeek: usage?.codeWeek ?? null, total7d: usage?.total7d ?? null, matched: usageMatched }
+        : { status: 'none', days: [], codeWeek: null, total7d: null, matched: 0 },
     },
     stats: {
       modelCount: models.length,
@@ -218,4 +223,89 @@ export function buildCatalog({ modelsResp, benchmarkRecords, benchmarkStatus, sp
     },
     models,
   };
+}
+
+/**
+ * Rankings API（rankings-daily）の日次とプログラミング用途の週次から、モデルごとの利用量をまとめる。
+ * `:free` などの付いた変種は別々に数えられているので、付く前の slug で合算する。
+ * 上位 50 に入った日だけ値が出る（入らない日は 0 扱い）。
+ */
+export function buildUsage(dailyResp, codeResp = null) {
+  const baseSlug = (s) => s.split(':')[0];
+  const rows = Array.isArray(dailyResp?.data) ? dailyResp.data : [];
+  const days = [...new Set(rows.map((r) => r?.date).filter((d) => typeof d === 'string'))].sort().slice(-28);
+  const idx = new Map(days.map((d, i) => [d, i]));
+  const n = days.length;
+  const per = new Map();
+  const totals = new Array(n).fill(0);
+  for (const r of rows) {
+    const i = idx.get(r?.date);
+    const t = toNum(r?.total_tokens);
+    if (i === undefined || t === null || typeof r.model_permaslug !== 'string') continue;
+    totals[i] += t;
+    if (r.model_permaslug === 'other') continue;
+    const k = baseSlug(r.model_permaslug);
+    const arr = per.get(k) ?? new Array(n).fill(0);
+    arr[i] += t;
+    per.set(k, arr);
+  }
+  const sum = (a, from, to) => a.slice(Math.max(0, from), to).reduce((x, y) => x + y, 0);
+  const total7d = sum(totals, n - 7, n);
+  const bySlug = {};
+  for (const [k, arr] of per) {
+    const tokens7d = sum(arr, n - 7, n);
+    bySlug[k] = {
+      tokens7d,
+      prev7d: n >= 14 ? sum(arr, n - 14, n - 7) : null,
+      share7d: total7d > 0 ? tokens7d / total7d : null,
+      rank7d: null,
+      daily: arr,
+      codeTokens: null,
+      codeRank: null,
+    };
+  }
+  [...Object.entries(bySlug)]
+    .filter(([, u]) => u.tokens7d > 0)
+    .sort((a, b) => b[1].tokens7d - a[1].tokens7d)
+    .forEach(([, u], i) => (u.rank7d = i + 1));
+
+  // プログラミング用途（週ごとの推定値）。最後の週が途中までなら、ひとつ前の締まった週を使う
+  let codeWeek = null;
+  const cRows = Array.isArray(codeResp?.data) ? codeResp.data : [];
+  const weeks = [...new Set(cRows.map((r) => r?.date).filter((d) => typeof d === 'string'))].sort();
+  const end = codeResp?.meta?.end_date ?? days[n - 1] ?? null;
+  const complete = weeks.filter((w) => !end || addDays(w, 6) <= end);
+  codeWeek = complete[complete.length - 1] ?? weeks[weeks.length - 1] ?? null;
+  if (codeWeek) {
+    const code = new Map();
+    for (const r of cRows) {
+      const t = toNum(r?.total_tokens);
+      if (r?.date !== codeWeek || t === null || typeof r.model_permaslug !== 'string' || r.model_permaslug === 'other') continue;
+      const k = baseSlug(r.model_permaslug);
+      code.set(k, (code.get(k) ?? 0) + t);
+    }
+    [...code.entries()].sort((a, b) => b[1] - a[1]).forEach(([k, t], i) => {
+      bySlug[k] ??= { tokens7d: 0, prev7d: null, share7d: null, rank7d: null, daily: new Array(n).fill(0), codeTokens: null, codeRank: null };
+      bySlug[k].codeTokens = t;
+      bySlug[k].codeRank = i + 1;
+    });
+  }
+  return { days, total7d, codeWeek, bySlug };
+}
+
+function addDays(ymd, k) {
+  const d = new Date(`${ymd}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + k);
+  return d.toISOString().slice(0, 10);
+}
+
+/** 利用量を canonical_slug（無ければ id）で各モデルに付ける。付いたモデル数を返す */
+export function attachUsage(models, bySlug) {
+  let matched = 0;
+  for (const m of models) {
+    const u = bySlug?.[m.canonicalSlug ?? ''] ?? bySlug?.[m.id.split(':')[0]] ?? null;
+    m.usage = u ? { ...u } : null;
+    if (u) matched++;
+  }
+  return matched;
 }
