@@ -138,8 +138,10 @@ select.mini { width: auto; padding: 2px 6px; }
 .metric-list li.on { color: var(--accent); }
 
 /* ---------- 2 画面目: 表 ---------- */
-.table-panel { margin: 0 var(--gap); }
-.table-scroll { margin-top: 8px; overflow: auto; max-height: calc(100vh - 120px); border: 1px solid var(--border); border-radius: 8px; }
+/* 表は 1 画面ぶんの高さに収め、行の高さは JS（fitTableRows）で詰める */
+.table-panel { margin: 0 var(--gap); height: calc(100dvh - var(--gap)); box-sizing: border-box; display: flex; flex-direction: column; }
+.table-scroll { flex: 1; min-height: 0; margin-top: 6px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; }
+.notes-wrap { margin: var(--gap) var(--gap) 0; }
 table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
 th, td { padding: 5px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; text-align: right; background-color: var(--surface); }
 th { position: sticky; top: 0; z-index: 2; background-color: var(--surface-3); font-size: 11.5px; cursor: pointer; user-select: none; }
@@ -255,3 +257,21 @@ td .rank { display: inline-block; min-width: 2.4em; margin-right: 4px; color: va
 .spark { display: block; width: 100%; height: 30px; margin-top: 3px; }
 .spark-line { fill: none; stroke: #f472b6; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .spark-area { fill: rgba(244, 114, 182, 0.14); stroke: none; }
+
+/* 表: 値と基準比を 1 セルに */
+#table td { height: var(--rowh, 28px); padding-top: 0; padding-bottom: 0; }
+#table th, #table td { padding-left: 8px; padding-right: 8px; }
+#table.dense { font-size: 11.5px; }
+#table.dense th { font-size: 11px; }
+#table .col-model { max-width: 240px; }
+#table .col-model .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+#table .pv2 { display: inline-block; min-width: 3.6em; }
+#table .u { margin-left: 2px; font-size: 10px; color: var(--muted); }
+#table .r { display: inline-block; min-width: 4.6em; margin-left: 6px; padding: 0 4px; border-radius: 4px; font-size: 11px; text-align: right; }
+#table .r.good { color: var(--good); background: var(--good-soft); }
+#table .r.bad { color: var(--bad); background: var(--bad-soft); }
+#table .r.na { color: var(--neutral); }
+#table .tag { padding: 0 4px; font-size: 10px; }
+#table.xdense { font-size: 11px; line-height: 1.1; }
+#table.xdense .r { font-size: 10.5px; }
+#table.xdense .tag { line-height: 1.2; }

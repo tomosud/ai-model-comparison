@@ -62,6 +62,12 @@
               </select>
             </label>
           </div>
+          <label class="f-field">件数で絞るときの順
+            <select id="order">
+              <option value="new">新しい順</option>
+              <option value="usage">よく使われている順（OpenRouter 7 日）</option>
+            </select>
+          </label>
           <label class="f-field">対象
             <select id="scope">
               <option value="main">主要（派生・実験版・画像系を除く）</option>
@@ -78,8 +84,7 @@
             <ul>
               <li><b>左上ほど</b>「安くて高スコア」。緑の線 = パレート線（これより左上のモデルはない）</li>
               <li>点をクリック → そのモデルが<b>基準</b>（十字の点線）</li>
-              <li>ホイールで拡大縮小、ドラッグで移動、<kbd>F</kbd> で全体表示</li>
-              <li>点や表の行にマウスを乗せると右に詳細。名前は重ならない位置に置き、置けないものは省きます（拡大すると出ます）</li>
+              <li>点や表の行にマウスを乗せると右に詳細。名前は重ならない位置に置き、置けないものは省きます</li>
             </ul>
           </details>
         </aside>
@@ -108,7 +113,6 @@
                   <option value="none">出さない</option>
                 </select>
               </label>
-              <button type="button" id="fitBtn" class="btn" title="全体を表示（F キー）">フィット (F)</button>
             </div>
           </div>
           <p class="metric-help" id="metricHelp"></p>
@@ -126,7 +130,7 @@
       </main>
     </div>
 
-    <section class="panel table-panel" aria-label="相対比較表">
+    <section class="panel table-panel" id="tablePanel" aria-label="相対比較表">
       <div class="panel-head">
         <h2>相対比較表 <span class="h-sub">▲▼ = 基準より良い（緑）/ 悪い（赤）。列名クリックで並べ替え、行クリックで基準に、マウスを乗せると右に詳細</span></h2>
         <div class="toggles">
@@ -137,6 +141,8 @@
       <div class="table-scroll">
         <table id="table"></table>
       </div>
+    </section>
+    <section class="notes-wrap" aria-label="表の読み方">
       <ul class="notes">
         <li>スコア比は採用した指標の<strong>数値の比</strong>であり、「何倍賢い」という意味ではありません。</li>
         <li>コスト比は低いほど安い（0.50× = 半額）。速度比は高いほど速い。遅延比は低いほど待ち時間が短い。</li>

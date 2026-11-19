@@ -10,6 +10,8 @@ export interface FilterState {
   ageMonths: number; // 0 = 制限なし
   query: string;
   maxCount: number;
+  /** 件数で絞るときの順番。usage = OpenRouter での利用量が多い順（圏外は新しい順で後ろに） */
+  order?: 'new' | 'usage';
 }
 
 function ageOk(m: Model, months: number, now: number): boolean {
@@ -28,6 +30,10 @@ export function filterModels(cat: Catalog, f: FilterState, now = Date.now()): Mo
     return ageOk(m, f.ageMonths, now);
   });
   list.sort((a, b) => String(b.createdAt ?? '').localeCompare(String(a.createdAt ?? '')));
+  if (f.order === 'usage') {
+    const u = (m: Model) => (m.usage?.rank7d ? m.usage.tokens7d : -1);
+    list.sort((a, b) => u(b) - u(a));
+  }
   return f.maxCount > 0 ? list.slice(0, f.maxCount) : list;
 }
 

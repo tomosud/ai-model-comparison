@@ -21,6 +21,7 @@ interface State {
   ageMonths: number;
   scope: 'main' | 'all';
   maxCount: number;
+  order: 'new' | 'usage';
   query: string;
   mode: 'abs' | 'rel';
   logX: boolean;
@@ -43,6 +44,7 @@ const state: State = {
   ageMonths: 12,
   scope: 'main',
   maxCount: 30,
+  order: 'new',
   query: '',
   mode: 'abs',
   logX: false,
@@ -60,12 +62,6 @@ let catalog: Catalog | null = null;
 let visible: Model[] = [];
 let rows: Row[] = [];
 let chart: echarts.ECharts | null = null;
-let lastAxisSig = '';
-
-function fitChart() {
-  if (!chart) return;
-  for (const i of [0, 1, 2]) chart.dispatchAction({ type: 'dataZoom', dataZoomIndex: i, start: 0, end: 100 });
-}
 
 const PROVIDER_NAMES: Record<string, string> = {
   openai: 'OpenAI', anthropic: 'Anthropic', google: 'Google', deepseek: 'DeepSeek', 'meta-llama': 'Meta', mistralai: 'Mistral', 'x-ai': 'xAI', qwen: 'Qwen',
@@ -204,6 +200,7 @@ function readUrl() {
   if (age !== null) state.ageMonths = age;
   const max = num('max');
   if (max !== null) state.maxCount = max;
+  if (q.get('order') === 'usage') state.order = 'usage';
   if (q.get('scope') === 'all') state.scope = 'all';
   if (q.get('mode') === 'rel') state.mode = 'rel';
   if (q.get('log') === '1') state.logX = true;
@@ -225,6 +222,7 @@ function writeUrl() {
   q.set('out', String(state.outTok));
   q.set('age', String(state.ageMonths));
   q.set('max', String(state.maxCount));
+  if (state.order !== 'new') q.set('order', state.order);
   if (state.scope === 'all') q.set('scope', 'all');
   q.set('mode', state.mode);
   if (state.logX) q.set('log', '1');
@@ -260,7 +258,7 @@ function showLoadError(err: unknown) {
 // ---------- 描画 ----------
 function recompute() {
   if (!catalog) return;
-  visible = filterModels(catalog, { providers: state.providers, scope: state.scope, ageMonths: state.ageMonths, query: state.query, maxCount: state.maxCount });
+  visible = filterModels(catalog, { providers: state.providers, scope: state.scope, ageMonths: state.ageMonths, query: state.query, maxCount: state.maxCount, order: state.order });
   const metrics = availableMetrics(visible);
   // 選んでいた指標が表示対象に無いときだけ差し替える（表示対象に指標が 1 つも無ければ保持）
   if (metrics.length && !metrics.some((m) => m.key === state.metric)) state.metric = defaultMetric(visible);
@@ -425,11 +423,6 @@ function renderChart() {
   if (!chart) {
     el.innerHTML = '';
     chart = echarts.init(el, undefined, { renderer: 'canvas' });
-    let raf = 0;
-    chart.on('datazoom', () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(placeLabels);
-    });
     chart.on('mouseover', (p) => hoverDetail((p.data as { id?: string } | undefined)?.id));
     chart.on('click', (p) => {
       const id = (p.data as { id?: string } | undefined)?.id;
@@ -544,21 +537,11 @@ function renderChart() {
     });
   }
 
-  // 基準の変更などで描き直しても拡大位置を保つ。軸の意味が変わったら全体表示に戻す
-  const axisSig = `${state.metric}|${rel}|${state.logX}`;
-  let zoomKeep: { start?: number; end?: number }[] = [{}, {}];
-  if (axisSig === lastAxisSig) {
-    zoomKeep = [0, 1].map((i) => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const r = (chart as any).getModel().getComponent('dataZoom', i).getPercentRange() as number[];
-        return { start: r[0], end: r[1] };
-      } catch {
-        return {};
-      }
-    });
-  }
-  lastAxisSig = axisSig;
+  // 軸は常に表示中の点にぴったり合わせる（端に少しだけ余白）。拡大縮小はしない
+  const pad = (log: boolean) => ({
+    min: (v: { min: number; max: number }) => (log ? v.min / Math.pow(v.max / v.min, 0.04) : v.min - (v.max - v.min || Math.abs(v.min) || 1) * 0.04),
+    max: (v: { min: number; max: number }) => (log ? v.max * Math.pow(v.max / v.min, 0.04) : v.max + (v.max - v.min || Math.abs(v.max) || 1) * 0.04),
+  });
 
   // 狭い画面では軸名を短くする（トークン数は入力欄に出ているので省く）
   const narrow = el.clientWidth < 560;
@@ -573,7 +556,7 @@ function renderChart() {
       animation: false,
       textStyle: { fontFamily: getComputedStyle(document.body).fontFamily },
       legend: { top: 0, right: 0, selectedMode: false, itemWidth: 12, itemHeight: 10, textStyle: { color: text, fontSize: 12 }, data: [...groups.keys()].map(providerName).concat(baseRow ? ['基準'] : []) },
-      grid: { left: 56, right: 24, top: 30, bottom: 58, containLabel: true },
+      grid: { left: 56, right: 24, top: 30, bottom: 34, containLabel: true },
       tooltip: {
         trigger: 'item',
         confine: true,
@@ -588,10 +571,11 @@ function renderChart() {
         nameLocation: 'middle',
         nameGap: 30,
         nameTextStyle: { color: muted },
-        axisLabel: { color: muted, formatter: (v: number) => (rel ? `${+v.toFixed(2)}×` : `$${+v.toPrecision(3)}`) },
+        axisLabel: { color: muted, hideOverlap: true, showMinLabel: false, showMaxLabel: false, formatter: (v: number) => (rel ? `${+v.toFixed(2)}×` : `$${+v.toPrecision(3)}`) },
         axisLine: { lineStyle: { color: border } },
         splitLine: { lineStyle: { color: border, opacity: 0.6 } },
         scale: true,
+        ...pad(state.logX),
       },
       yAxis: {
         type: 'value',
@@ -599,17 +583,12 @@ function renderChart() {
         nameLocation: 'middle',
         nameGap: 52,
         nameTextStyle: { color: muted },
-        axisLabel: { color: muted, formatter: (v: number) => (rel ? `${+v.toFixed(2)}×` : `${+v.toPrecision(4)}`) },
+        axisLabel: { color: muted, hideOverlap: true, showMinLabel: false, showMaxLabel: false, formatter: (v: number) => (rel ? `${+v.toFixed(2)}×` : `${+v.toPrecision(4)}`) },
         axisLine: { lineStyle: { color: border } },
         splitLine: { lineStyle: { color: border, opacity: 0.6 } },
         scale: true,
+        ...pad(false),
       },
-      dataZoom: [
-        // ホイールで拡大縮小、ドラッグで移動。F キーか「フィット」で全体表示に戻す
-        { type: 'inside', xAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[0] },
-        { type: 'inside', yAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: true, moveOnMouseMove: true, moveOnMouseWheel: false, ...zoomKeep[1] },
-        { type: 'slider', xAxisIndex: 0, height: 14, bottom: 4, filterMode: 'none', textStyle: { color: muted }, borderColor: border, backgroundColor: cssVar('--surface-2'), fillerColor: 'rgba(110,160,255,0.18)', dataBackground: { lineStyle: { color: border }, areaStyle: { color: border } }, selectedDataBackground: { lineStyle: { color: cssVar('--accent') }, areaStyle: { color: 'rgba(110,160,255,0.25)' } }, handleStyle: { color: cssVar('--surface-3'), borderColor: muted }, moveHandleStyle: { color: cssVar('--surface-3') }, ...zoomKeep[0] },
-      ],
       series,
     },
     { notMerge: true },
@@ -731,7 +710,7 @@ function placeLabels() {
   chart.setOption({ series: upd });
   const hidden = order.filter((it) => !placed.has(it)).length;
   const note = $('labelNote');
-  if (note) note.textContent = hidden > 0 ? `名前が重なるため ${hidden} 件は省略（拡大すると出ます。点にマウスを乗せても見られます）` : '';
+  if (note) note.textContent = hidden > 0 ? `名前が重なるため ${hidden} 件は省略（点にマウスを乗せると見られます）` : '';
 }
 
 function tooltipHtml(r: Row): string {
@@ -842,18 +821,14 @@ const COL_ICON: Partial<Record<string, string>> = {
   speed: ICON.speed, relSpeed: ICON.speed, latency: ICON.latency, relLatency: ICON.latency, usage: ICON.usage, created: ICON.date,
 };
 
+// 値の列は基準比も同じセルに出す（並べ替えの順は値でも比でも同じ）
 const BASE_COLUMNS: { key: SortKey; label: string; cls?: string; title?: string }[] = [
-  { key: 'provider', label: 'メーカー', cls: 'l' },
-  { key: 'name', label: 'モデル', cls: 'l col-model' },
-  { key: 'score', label: 'スコア' },
-  { key: 'relScore', label: 'スコア比', title: '選んでいる評価指標の基準比。高いほど良い（数値の比であり知能の倍率ではない）' },
-  { key: 'cost', label: '想定コスト' },
-  { key: 'relCost', label: 'コスト比', title: '低いほど安い' },
-  { key: 'relEfficiency', label: 'コスト効率比', title: '高いほど効率的' },
-  { key: 'speed', label: '速度' },
-  { key: 'relSpeed', label: '速度比', title: '高いほど速い' },
-  { key: 'latency', label: '遅延' },
-  { key: 'relLatency', label: '遅延比', title: '低いほど良い' },
+  { key: 'name', label: 'モデル', cls: 'l col-model', title: '色の点 = メーカー' },
+  { key: 'score', label: 'スコア ／ 比', title: '選んでいる評価指標の値と基準比。高いほど良い（数値の比であり知能の倍率ではない）' },
+  { key: 'cost', label: '想定コスト ／ 比', title: '想定コストと基準比。低いほど安い' },
+  { key: 'relEfficiency', label: '効率比', title: 'コスト効率（スコア ÷ 想定コスト）の基準比。高いほど効率的' },
+  { key: 'speed', label: '速度 ／ 比', title: '出力速度と基準比。高いほど速い' },
+  { key: 'latency', label: '遅延 ／ 比', title: '最初の応答までの時間と基準比。低いほど良い' },
   { key: 'usage', label: '利用量', title: 'OpenRouter での直近 7 日の利用トークン数と順位（上位 50 のみ）。▲▼ は前の 7 日との比較' },
   { key: 'created', label: '登録日' },
 ];
@@ -901,6 +876,19 @@ function sortedRows(): Row[] {
   return list;
 }
 
+/** 値と基準比を 1 セルに。比は色付きの小さな札で出す */
+function pairCell(val: string, v: number | null, better: 'high' | 'low', raw: string, dbAttr: string) {
+  let r = '<span class="r na">N/A</span>';
+  if (v !== null) {
+    const same = Math.abs(v - 1) < 0.005;
+    const cls = same ? 'na' : (v > 1) === (better === 'high') ? 'good' : 'bad';
+    r = `<span class="r ${cls}">${same ? '＝' : v > 1 ? '▲' : '▼'}${fmtRatio(v)}</span>`;
+  }
+  return `<td title="${esc(raw)}"${dbAttr}><span class="pv2">${val}</span>${r}</td>`;
+}
+/** 並べ替えの見出し: 比の列は値の列に寄せて表示する */
+const SORT_ALIAS: Partial<Record<string, string>> = { relScore: 'score', relCost: 'cost', relSpeed: 'speed', relLatency: 'latency', provider: 'name' };
+
 function ratioCell(v: number | null, better: 'high' | 'low', raw: string) {
   if (v === null) return `<td class="na" title="計算できません">N/A</td>`;
   const same = Math.abs(v - 1) < 0.005;
@@ -923,31 +911,40 @@ function renderTable() {
   const mUse = maxOf((r) => r.model.usage?.tokens7d ?? null);
   const ranked = hasRankings();
   const db = (v: number | null, max: number, kind: string) => (v === null || max <= 0 ? '' : ` class="db db-${kind}" style="--w:${Math.max(2, (100 * v) / max).toFixed(1)}%"`);
-  const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${state.sortKey === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${COL_ICON[c.key] ?? ''}${c.label}</th>`).join('')}</tr></thead>`;
+  const head = `<thead><tr>${cols.map((c) => `<th class="${c.cls ?? ''}" data-key="${c.key}" ${c.title ? `title="${esc(c.title)}"` : ''} aria-sort="${(SORT_ALIAS[state.sortKey] ?? state.sortKey) === c.key ? (state.sortDir === 1 ? 'ascending' : 'descending') : 'none'}" tabindex="0">${COL_ICON[c.key] ?? ''}${c.label}</th>`).join('')}</tr></thead>`;
   const body = list
     .map((r) => {
       const m = r.model;
       const isBase = base?.id === m.id;
       const src = r.metric ? `${SOURCE_LABELS[r.metric.source] ?? r.metric.source} ・ ${fmtDay(r.metric.evaluatedAt)}` : '未評価';
       return `<tr data-id="${esc(m.id)}" class="${isBase ? 'is-base' : ''} ${state.detail === m.id ? 'is-detail' : ''}">
-        <td class="l"><span class="prov"><span class="dot" style="background:${providerColor(m.providerSlug)}"></span>${esc(providerName(m.providerSlug))}</span></td>
-        <td class="l col-model" title="${esc(m.id)}"><button type="button" class="model-btn" data-base="${esc(m.id)}" title="クリックで基準に設定">${esc(shortName(m))}</button>${isBase ? '<span class="tag base">基準</span>' : ''}${r.pareto ? '<span class="tag pareto">パレート</span>' : ''}</td>
-        <td title="${esc(src)}"${db(r.score, mScore, 'score')}>${r.score === null ? '<span class="na">未評価</span>' : fmtNum(r.score, 2)}</td>
-        ${ratioCell(r.relScore, 'high', `${fmtNum(r.score, 4)} ÷ ${fmtNum(base ? findMetric(base, state.metric)?.score ?? null : null, 4)}`)}
-        <td title="入力 $${fmtNum(m.inputUsdPerMillion, 4)} / 出力 $${fmtNum(m.outputUsdPerMillion, 4)} per 100万tok"${db(r.cost, mCost, 'cost')}>${fmtUsd(r.cost)}</td>
-        ${ratioCell(r.relCost, 'low', `${fmtUsd(r.cost)} ÷ ${fmtUsd(base ? scenarioCostUsd(base, state.inTok, state.outTok) : null)}`)}
+        <td class="l col-model" title="${esc(providerName(m.providerSlug))} ・ ${esc(m.id)}"><span class="dot" style="background:${providerColor(m.providerSlug)}"></span><button type="button" class="model-btn" data-base="${esc(m.id)}" title="クリックで基準に設定">${esc(shortName(m))}</button>${isBase ? '<span class="tag base">基準</span>' : ''}${r.pareto ? '<span class="tag pareto" title="パレート線（お得の境界）の上">P</span>' : ''}</td>
+        ${pairCell(r.score === null ? '<span class="na">未評価</span>' : fmtNum(r.score, 2), r.relScore, 'high', `${src}。${fmtNum(r.score, 4)} ÷ ${fmtNum(base ? findMetric(base, state.metric)?.score ?? null : null, 4)}`, db(r.score, mScore, 'score'))}
+        ${pairCell(fmtUsd(r.cost), r.relCost, 'low', `入力 $${fmtNum(m.inputUsdPerMillion, 4)} / 出力 $${fmtNum(m.outputUsdPerMillion, 4)} per 100万tok。${fmtUsd(r.cost)} ÷ ${fmtUsd(base ? scenarioCostUsd(base, state.inTok, state.outTok) : null)}`, db(r.cost, mCost, 'cost'))}
         ${ratioCell(r.relEfficiency, 'high', r.scorePerDollar === null ? 'スコア/ドルが定義できません' : `スコア/ドル = ${r.scorePerDollar.toFixed(3)}`)}
         ${extraKeys.map((k) => ratioCell(keyRatio(m, k), 'high', `${fmtNum(findMetric(m, k)?.score ?? null, 3)} ÷ ${fmtNum(base ? findMetric(base, k)?.score ?? null : null, 3)}`)).join('')}
-        <td${db(m.throughputTps, mTps, 'speed')}>${m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)} tok/s` : '<span class="na">未取得</span>'}</td>
-        ${ratioCell(r.relSpeed, 'high', `${fmtNum(m.throughputTps, 1)} tok/s`)}
-        <td${db(m.latencySeconds, mLat, 'lat')}>${m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)} s` : '<span class="na">未取得</span>'}</td>
-        ${ratioCell(r.relLatency, 'low', `${fmtNum(m.latencySeconds, 3)} s`)}
+        ${pairCell(m.throughputTps !== null ? `${fmtNum(m.throughputTps, 0)}<span class="u">tok/s</span>` : '<span class="na">未取得</span>', r.relSpeed, 'high', `${fmtNum(m.throughputTps, 1)} tok/s`, db(m.throughputTps, mTps, 'speed'))}
+        ${pairCell(m.latencySeconds !== null ? `${fmtNum(m.latencySeconds, 2)}<span class="u">s</span>` : '<span class="na">未取得</span>', r.relLatency, 'low', `${fmtNum(m.latencySeconds, 3)} s`, db(m.latencySeconds, mLat, 'lat'))}
         <td${db(m.usage?.rank7d ? m.usage.tokens7d : null, mUse, 'use')}>${m.usage?.rank7d ? `<span class="rank">#${m.usage.rank7d}</span>${fmtTok(m.usage.tokens7d)}${trendHtml(usageTrend(m.usage))}` : `<span class="na">${ranked ? '圏外' : '未取得'}</span>`}</td>
         <td>${esc(fmtDay(m.createdAt))}</td>
       </tr>`;
     })
     .join('');
   $('table').innerHTML = head + `<tbody>${body || `<tr><td colspan="${cols.length}" class="l na">条件に合うモデルがありません。</td></tr>`}</tbody>`;
+  fitTableRows();
+}
+
+/** 表の行の高さを、全行が枠に収まるように詰める（詰めすぎると読めないので下限あり。超えたら枠内でスクロール） */
+function fitTableRows() {
+  const sc = document.querySelector<HTMLElement>('.table-scroll');
+  const t = $('table') as HTMLTableElement;
+  const n = t.tBodies[0]?.rows.length ?? 0;
+  if (!sc || !n) return;
+  const avail = sc.clientHeight - (t.tHead?.offsetHeight ?? 0) - 2;
+  const h = Math.max(17, Math.min(30, Math.floor(avail / n) - 1)); // -1 = 行の下線
+  t.style.setProperty('--rowh', `${h}px`);
+  t.classList.toggle('dense', h < 23);
+  t.classList.toggle('xdense', h < 20);
 }
 
 function renderRankSource() {
@@ -1054,6 +1051,7 @@ function bindControls() {
   $<HTMLSelectElement>('age').addEventListener('change', (e) => { state.ageMonths = Number((e.target as HTMLSelectElement).value); recompute(); });
   $<HTMLSelectElement>('scope').addEventListener('change', (e) => { state.scope = (e.target as HTMLSelectElement).value as State['scope']; recompute(); });
   $<HTMLSelectElement>('max').addEventListener('change', (e) => { state.maxCount = Number((e.target as HTMLSelectElement).value); recompute(); });
+  $<HTMLSelectElement>('order').addEventListener('change', (e) => { state.order = (e.target as HTMLSelectElement).value as State['order']; recompute(); });
   let t: number | undefined;
   $<HTMLInputElement>('query').addEventListener('input', (e) => {
     clearTimeout(t);
@@ -1066,15 +1064,6 @@ function bindControls() {
   $<HTMLInputElement>('pareto').addEventListener('change', (e) => { state.pareto = (e.target as HTMLInputElement).checked; recompute(); });
   $<HTMLSelectElement>('labels').addEventListener('change', (e) => { state.labels = (e.target as HTMLSelectElement).value as State['labels']; recompute(); });
   $<HTMLSelectElement>('speedViz').addEventListener('change', (e) => { state.speedViz = (e.target as HTMLSelectElement).value as State['speedViz']; recompute(); });
-  $('fitBtn').addEventListener('click', fitChart);
-  document.addEventListener('keydown', (e) => {
-    const t = e.target as HTMLElement;
-    if (e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName) || t.isContentEditable) return;
-    if (e.key === 'f' || e.key === 'F') {
-      e.preventDefault();
-      fitChart();
-    }
-  });
   $<HTMLInputElement>('pinBase').addEventListener('change', (e) => { state.pinBase = (e.target as HTMLInputElement).checked; renderTable(); });
 
   const table = $('table');
@@ -1109,6 +1098,7 @@ function bindControls() {
   let rt: number | undefined;
   window.addEventListener('resize', () => {
     chart?.resize();
+    fitTableRows();
     clearTimeout(rt);
     rt = window.setTimeout(renderChart, 150); // 幅の境目をまたいだら軸名を描き直す
   });
@@ -1133,6 +1123,7 @@ function syncInputs() {
   };
   setSel('age', String(state.ageMonths));
   setSel('max', String(state.maxCount));
+  setSel('order', state.order);
   $<HTMLSelectElement>('scope').value = state.scope;
   $<HTMLInputElement>('pinBase').checked = state.pinBase;
   $<HTMLInputElement>('query').value = state.query;
@@ -1227,7 +1218,6 @@ function resetView() {
   const pre = filterModels(catalog, { providers: MAJOR_PROVIDERS, scope: 'main', ageMonths: 0, query: '', maxCount: 0 });
   state.metric = defaultMetric(pre);
   state.base = defaultBase(pre, state.metric)?.id ?? null;
-  lastAxisSig = ''; // 拡大も全体表示に戻す
   customTok = false;
   renderProviders();
   syncInputs();
