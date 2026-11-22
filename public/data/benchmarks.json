@@ -1,5 +1,5 @@
 {
- "fetchedAt": "2026-11-21T21:21:24.255Z",
+ "fetchedAt": "2026-11-22T21:21:29.390Z",
  "metas": [
   {
    "source": "artificial-analysis",
@@ -17,7 +17,7 @@
   },
   {
    "source": "design-arena",
-   "asOf": "2026-11-21T12:00:32.190Z",
+   "asOf": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "citation": "Source: Design Arena (www.designarena.ai) via OpenRouter (openrouter.ai/rankings).",
    "sourceUrl": "https://www.designarena.ai"
@@ -9700,38 +9700,38 @@
    "config": null
   },
   {
-   "modelPermaslug": "google/gemini-4-neon-20261118",
+   "modelPermaslug": "anthropic/claude-fable-5.2-20261109",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1392,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "google/gemini-4-neon-20261118",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 65.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1391,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
    "modelPermaslug": "anthropic/claude-fable-5.2-20261109",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 65.1,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "google/gemini-4-neon-20261118",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1390,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
-   "modelPermaslug": "anthropic/claude-fable-5.2-20261109",
+   "modelPermaslug": "google/gemini-4-neon-20261118",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 65,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 65.4,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9739,8 +9739,8 @@
    "modelPermaslug": "meta/muse-wonder-20261012",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1384,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1385,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9749,7 +9749,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 62.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9758,7 +9758,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1381,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9767,7 +9767,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 61.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-sonnet-5.5-20260928",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1353,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-sonnet-5.5-20260928",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 57.6,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9775,8 +9793,8 @@
    "modelPermaslug": "openai/gpt-6.1-sol-20260929",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1352,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1353,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9785,25 +9803,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 56.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-sonnet-5.5-20260928",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1351,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-sonnet-5.5-20260928",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 57.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9812,7 +9812,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1350,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9821,7 +9821,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 60.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9830,7 +9830,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1345,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9839,7 +9839,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 60.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9848,7 +9848,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1345,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9856,8 +9856,8 @@
    "modelPermaslug": "meta/muse-spark-1.3-20260902",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 57.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 57.8,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9866,7 +9866,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1343,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9875,7 +9875,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9884,7 +9884,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1341,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9892,8 +9892,8 @@
    "modelPermaslug": "moonshotai/kimi-k3.1-pro-20261023",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 60,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 59.7,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9902,7 +9902,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1340,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9911,7 +9911,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 60.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9920,7 +9920,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1330,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9928,8 +9928,8 @@
    "modelPermaslug": "google/gemini-4-hydrogen-20261112",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 56.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 56.3,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9937,8 +9937,8 @@
    "modelPermaslug": "anthropic/claude-fable-5.1-20260831",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1322,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1323,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9947,7 +9947,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9955,8 +9955,8 @@
    "modelPermaslug": "google/gemini-4-argon-20261013",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1319,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1320,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9965,7 +9965,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9973,8 +9973,8 @@
    "modelPermaslug": "anthropic/claude-opus-5-20260723",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1309,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1310,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9983,7 +9983,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -9992,7 +9992,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1308,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10001,7 +10001,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10010,7 +10010,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1298,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10019,7 +10019,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10028,7 +10028,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1293,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10037,7 +10037,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10045,8 +10045,8 @@
    "modelPermaslug": "google/gemini-3.7-flash-20260813",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1290,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1291,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10055,7 +10055,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10063,8 +10063,8 @@
    "modelPermaslug": "meta/muse-spark-open-20261015",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1290,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1289,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10072,8 +10072,8 @@
    "modelPermaslug": "meta/muse-spark-open-20261015",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 50.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 50.7,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10082,7 +10082,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1285,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10091,7 +10091,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10099,8 +10099,8 @@
    "modelPermaslug": "deepseek/deepseek-v4.1-flash-20261017",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1280,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1281,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10109,7 +10109,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10118,7 +10118,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1279,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10127,7 +10127,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10136,7 +10136,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1275,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10145,7 +10145,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10154,7 +10154,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1273,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10163,7 +10163,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10172,7 +10172,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1272,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10181,7 +10181,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10189,8 +10189,8 @@
    "modelPermaslug": "x-ai/grok-4.6-20260810",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1271,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1272,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10199,7 +10199,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10207,8 +10207,8 @@
    "modelPermaslug": "anthropic/claude-4.6-opus-20260205",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1270,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1271,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10217,7 +10217,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 61.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10226,7 +10226,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1268,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10235,7 +10235,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10244,7 +10244,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1267,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10253,7 +10253,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 60.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10261,8 +10261,8 @@
    "modelPermaslug": "anthropic/claude-sonnet-5-20260630",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1259,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1260,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10271,25 +10271,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "x-ai/grok-4.7-20260916",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1259,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "x-ai/grok-4.7-20260916",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 47.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10297,8 +10279,8 @@
    "modelPermaslug": "z-ai/glm-5.3-flash-20260826",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1259,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1260,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10307,7 +10289,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "x-ai/grok-4.7-20260916",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1259,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "x-ai/grok-4.7-20260916",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 47.5,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10316,7 +10316,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1258,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10325,7 +10325,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 59.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10334,7 +10334,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1258,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10343,7 +10343,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10352,7 +10352,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1257,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10361,7 +10361,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10369,8 +10369,8 @@
    "modelPermaslug": "x-ai/grok-4.5-20260708",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1256,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1257,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10379,7 +10379,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10388,7 +10388,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1255,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10397,7 +10397,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10406,7 +10406,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1254,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10415,7 +10415,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 55,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10424,7 +10424,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1252,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10432,8 +10432,8 @@
    "modelPermaslug": "z-ai/glm-5.1-20260406",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 53.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 53,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10442,7 +10442,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1251,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10451,7 +10451,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10460,7 +10460,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1249,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10469,7 +10469,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10478,7 +10478,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1247,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10486,8 +10486,8 @@
    "modelPermaslug": "tencent/hy4-20261104",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 47,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 46.9,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10496,7 +10496,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1247,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10505,25 +10505,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 46.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-5-turbo-20260315",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1244,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-5-turbo-20260315",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 53.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10531,8 +10513,8 @@
    "modelPermaslug": "xiaomi/mimo-v2.5-20260422",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1244,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1245,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10541,7 +10523,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-5-turbo-20260315",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1244,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-5-turbo-20260315",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 53.3,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10549,8 +10549,8 @@
    "modelPermaslug": "openai/gpt-5.5-20260423",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1241,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1242,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10559,7 +10559,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10568,7 +10568,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1236,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10577,7 +10577,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10586,7 +10586,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1235,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10595,7 +10595,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10604,7 +10604,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1228,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10613,7 +10613,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 55.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10622,7 +10622,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1228,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10630,8 +10630,8 @@
    "modelPermaslug": "minimax/minimax-m3-20260531",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 50.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 50.3,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10640,7 +10640,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1226,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10649,7 +10649,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10657,8 +10657,8 @@
    "modelPermaslug": "tencent/hy4-flash-20261116",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1226,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1225,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10666,8 +10666,8 @@
    "modelPermaslug": "tencent/hy4-flash-20261116",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 44.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 44.4,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10676,7 +10676,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1225,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10685,7 +10685,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 64.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10694,7 +10694,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1224,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10703,7 +10703,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 59.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10712,7 +10712,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1223,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10721,7 +10721,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10730,7 +10730,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1218,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10739,7 +10739,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10748,7 +10748,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1218,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10757,7 +10757,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10766,7 +10766,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1217,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10774,8 +10774,8 @@
    "modelPermaslug": "inception/mercury-3-20261019",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 45,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 44.9,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10783,8 +10783,8 @@
    "modelPermaslug": "reflection/beam-1.0-501b-a23b-20261016",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1215,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1216,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10793,7 +10793,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 43.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10802,7 +10802,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1215,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10811,7 +10811,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10820,7 +10820,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1215,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10829,7 +10829,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10837,8 +10837,8 @@
    "modelPermaslug": "google/gemini-3.1-pro-preview-20260219",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1212,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1213,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10847,7 +10847,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10856,7 +10856,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1211,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10865,7 +10865,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 46.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10874,7 +10874,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1210,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10883,7 +10883,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10892,7 +10892,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1205,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10901,7 +10901,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10910,7 +10910,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1202,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10919,7 +10919,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10927,8 +10927,8 @@
    "modelPermaslug": "z-ai/glm-4.7-20251222",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1198,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1199,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10937,7 +10937,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10945,8 +10945,8 @@
    "modelPermaslug": "openai/gpt-5.4-20260305",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1193,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1194,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10955,7 +10955,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10964,7 +10964,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1191,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10973,7 +10973,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10982,7 +10982,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1189,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -10991,7 +10991,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 56.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11000,7 +11000,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1187,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11009,7 +11009,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11018,7 +11018,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1187,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11027,7 +11027,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11036,7 +11036,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1186,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11045,7 +11045,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 41.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11054,7 +11054,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1172,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11063,7 +11063,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 55.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11072,7 +11072,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1171,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11081,7 +11081,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11090,7 +11090,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1167,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11099,7 +11099,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 43.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11108,7 +11108,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1164,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11117,7 +11117,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11126,7 +11126,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1164,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11135,43 +11135,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "upstage/solar-pro4-20260810",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1162,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "upstage/solar-pro4-20260810",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 38.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-5.4-20260305",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1161,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-5.4-20260305",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 49.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11179,8 +11143,8 @@
    "modelPermaslug": "qwen/qwen3.5-397b-a17b-20260216",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1161,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1162,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11189,25 +11153,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
-   "modelPermaslug": "stepfun/step-3.7-flash-20260528",
+   "modelPermaslug": "upstage/solar-pro4-20260810",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1161,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1162,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
-   "modelPermaslug": "stepfun/step-3.7-flash-20260528",
+   "modelPermaslug": "upstage/solar-pro4-20260810",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 41.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 38.8,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11215,8 +11179,8 @@
    "modelPermaslug": "openai/gpt-5.4-20260305",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1160,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1161,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11225,7 +11189,43 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "stepfun/step-3.7-flash-20260528",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1161,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "stepfun/step-3.7-flash-20260528",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 41.6,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-5.4-20260305",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1160,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-5.4-20260305",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 49.2,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11234,7 +11234,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1159,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11243,7 +11243,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11252,7 +11252,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1158,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11261,7 +11261,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 41.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11270,7 +11270,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1157,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11279,7 +11279,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 56,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11288,7 +11288,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1156,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11297,7 +11297,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 42.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11305,8 +11305,8 @@
    "modelPermaslug": "anthropic/claude-4.1-opus-20250805",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1152,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1153,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11315,7 +11315,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 55.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11324,7 +11324,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1152,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11333,7 +11333,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11342,7 +11342,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1152,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11351,7 +11351,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 53,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11359,8 +11359,8 @@
    "modelPermaslug": "openai/gpt-5.2-20251211",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1151,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1152,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11369,25 +11369,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "x-ai/grok-4-fast",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1150,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "x-ai/grok-4-fast",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 43,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11395,8 +11377,8 @@
    "modelPermaslug": "openai/gpt-5.2-20251211",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1150,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1151,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11405,7 +11387,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11413,8 +11395,8 @@
    "modelPermaslug": "openai/gpt-5-2025-08-07",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1149,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1150,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11423,25 +11405,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
-   "modelPermaslug": "meta/muse-glimmer-30b-20260810",
+   "modelPermaslug": "x-ai/grok-4-fast",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1148,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1150,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
   {
-   "modelPermaslug": "meta/muse-glimmer-30b-20260810",
+   "modelPermaslug": "x-ai/grok-4-fast",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 34.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 43,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11449,8 +11431,8 @@
    "modelPermaslug": "qwen/qwen3.5-plus-20260216",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1148,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1149,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11459,79 +11441,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4.1-opus-20250805",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1147,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4.1-opus-20250805",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 50.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-4.5",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1147,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-4.5",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 54.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-4.6",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1147,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "z-ai/glm-4.6",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 54.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-5-2025-08-07",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1147,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-5-2025-08-07",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 51.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11539,8 +11449,8 @@
    "modelPermaslug": "openai/gpt-5.2-20251211",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1147,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1148,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11549,7 +11459,97 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "meta/muse-glimmer-30b-20260810",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1148,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "meta/muse-glimmer-30b-20260810",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 34.6,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4.1-opus-20250805",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1147,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4.1-opus-20250805",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 50.1,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-4.5",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1147,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-4.5",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 54.4,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-4.6",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1147,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "z-ai/glm-4.6",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 54.2,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-5-2025-08-07",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1147,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-5-2025-08-07",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 51.8,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11557,8 +11557,8 @@
    "modelPermaslug": "deepseek/deepseek-v3.2-20251201",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1145,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1146,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11567,7 +11567,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 49.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11576,7 +11576,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1143,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11585,7 +11585,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11594,7 +11594,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1142,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11603,7 +11603,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 55.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11612,7 +11612,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1142,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11621,7 +11621,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 42.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11629,8 +11629,8 @@
    "modelPermaslug": "openai/gpt-5.1-20251113",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1137,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1138,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11639,7 +11639,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11648,7 +11648,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1137,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11657,7 +11657,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 41.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11666,7 +11666,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1134,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11675,7 +11675,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 57.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11684,7 +11684,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1134,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11693,7 +11693,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 54.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11702,7 +11702,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1132,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11711,7 +11711,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11720,7 +11720,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1132,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11729,7 +11729,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11738,7 +11738,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1131,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11746,8 +11746,8 @@
    "modelPermaslug": "nvidia/nemotron-3.5-super-vl-20261015",
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
-   "score": 32.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 32,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11756,7 +11756,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1126,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11765,25 +11765,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 47.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "nvidia/nemotron-3-ultra-550b-a55b-20260604",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1124,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "nvidia/nemotron-3-ultra-550b-a55b-20260604",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 35.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11791,8 +11773,8 @@
    "modelPermaslug": "qwen/qwen3-coder-480b-a35b-07-25",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1124,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1125,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11801,25 +11783,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 61.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4-sonnet-20250522",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1123,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4-sonnet-20250522",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 53.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11827,8 +11791,8 @@
    "modelPermaslug": "mistralai/mistral-large-2512",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1123,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1124,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11837,7 +11801,43 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 47.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "nvidia/nemotron-3-ultra-550b-a55b-20260604",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1124,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "nvidia/nemotron-3-ultra-550b-a55b-20260604",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 35.3,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4-sonnet-20250522",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1123,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4-sonnet-20250522",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 53.4,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11846,7 +11846,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1120,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11855,7 +11855,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 52.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11864,7 +11864,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1119,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11873,7 +11873,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11882,7 +11882,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1118,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11891,7 +11891,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11899,8 +11899,8 @@
    "modelPermaslug": "minimax/minimax-m2",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1116,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1117,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11909,7 +11909,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11918,7 +11918,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1113,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11927,7 +11927,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 29.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11936,7 +11936,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1102,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11945,7 +11945,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 40.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11954,7 +11954,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1102,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11963,7 +11963,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 45.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11972,7 +11972,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1100,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11981,7 +11981,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 36.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11990,7 +11990,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1099,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -11999,25 +11999,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 40.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4.5-haiku-20251001",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 1096,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "anthropic/claude-4.5-haiku-20251001",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 44.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12025,8 +12007,8 @@
    "modelPermaslug": "openai/gpt-5-mini-2025-08-07",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1096,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1097,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12035,7 +12017,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 43.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4.5-haiku-20251001",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 1096,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "anthropic/claude-4.5-haiku-20251001",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 44.9,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12043,8 +12043,8 @@
    "modelPermaslug": "deepseek/deepseek-chat-v3.1",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1093,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1094,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12053,7 +12053,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 47.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12061,8 +12061,8 @@
    "modelPermaslug": "qwen/qwen3-max",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1091,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1092,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12071,7 +12071,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 44,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12080,7 +12080,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1090,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12089,7 +12089,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12098,7 +12098,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1086,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12107,7 +12107,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 46.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12115,8 +12115,8 @@
    "modelPermaslug": "moonshotai/kimi-k2-0905",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1079,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1080,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12125,7 +12125,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12133,8 +12133,8 @@
    "modelPermaslug": "openai/gpt-5.1-codex-mini-20251113",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1075,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1076,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12143,7 +12143,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 41.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12152,7 +12152,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1066,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12161,7 +12161,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12170,7 +12170,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1065,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12179,7 +12179,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 35.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12188,7 +12188,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1063,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12197,7 +12197,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 47,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12206,7 +12206,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1062,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12215,7 +12215,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 41.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12224,7 +12224,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1054,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12233,7 +12233,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 36.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12241,8 +12241,8 @@
    "modelPermaslug": "mistralai/mistral-medium-3",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1050,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1051,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12251,7 +12251,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 48.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12260,7 +12260,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1048,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12269,7 +12269,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 36.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12277,8 +12277,8 @@
    "modelPermaslug": "mistralai/ministral-14b-2512",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1046,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1047,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12287,7 +12287,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 44,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12296,7 +12296,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1041,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12305,7 +12305,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 45.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12314,7 +12314,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1035,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12323,7 +12323,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 42.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12332,7 +12332,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1024,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12341,7 +12341,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 27.1,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12350,7 +12350,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1020,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12359,7 +12359,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 42.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12368,7 +12368,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1015,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12377,7 +12377,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12385,8 +12385,8 @@
    "modelPermaslug": "qwen/qwen3-235b-a22b-thinking-2507",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 1014,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 1015,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12395,7 +12395,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 40.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12404,7 +12404,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1007,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12413,7 +12413,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 50.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12422,7 +12422,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 1001,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12431,7 +12431,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 51.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12440,7 +12440,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 992,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12449,7 +12449,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 37.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12458,7 +12458,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 989,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12467,7 +12467,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 38.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12476,7 +12476,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 988,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12485,7 +12485,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 19.9,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12493,8 +12493,8 @@
    "modelPermaslug": "qwen/qwen3-235b-a22b-04-28",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 983,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 984,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12503,7 +12503,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 38.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12512,7 +12512,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 980,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12521,7 +12521,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 32.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12530,7 +12530,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 978,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12539,7 +12539,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 27.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12548,7 +12548,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 975,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12557,7 +12557,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 47.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12566,7 +12566,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 957,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12575,25 +12575,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 46.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-4.1-nano-2025-04-14",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_elo",
-   "score": 944,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
-   "version": "v1",
-   "config": null
-  },
-  {
-   "modelPermaslug": "openai/gpt-4.1-nano-2025-04-14",
-   "source": "design-arena",
-   "metric": "design_arena_codecategories_win_rate",
-   "score": 47.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12601,8 +12583,8 @@
    "modelPermaslug": "openai/gpt-oss-120b",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 944,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 945,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12611,7 +12593,25 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 33.4,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-4.1-nano-2025-04-14",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_elo",
+   "score": 944,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
+   "version": "v1",
+   "config": null
+  },
+  {
+   "modelPermaslug": "openai/gpt-4.1-nano-2025-04-14",
+   "source": "design-arena",
+   "metric": "design_arena_codecategories_win_rate",
+   "score": 47.3,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12619,8 +12619,8 @@
    "modelPermaslug": "qwen/qwen3-30b-a3b-04-28",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 923,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 924,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12629,7 +12629,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 37.5,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12638,7 +12638,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 912,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12647,7 +12647,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 33.3,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12655,8 +12655,8 @@
    "modelPermaslug": "mistralai/mistral-small-3.2-24b-instruct-2506",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 888,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 889,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12665,7 +12665,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 39.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12674,7 +12674,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 861,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12683,7 +12683,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 35.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12692,7 +12692,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 856,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12701,7 +12701,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 27.7,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12710,7 +12710,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 842,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12719,7 +12719,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 34.8,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12728,7 +12728,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
    "score": 815,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12737,7 +12737,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 30.2,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12745,8 +12745,8 @@
    "modelPermaslug": "meta-llama/llama-4-scout-17b-16e-instruct",
    "source": "design-arena",
    "metric": "design_arena_codecategories_elo",
-   "score": 772,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "score": 771,
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   },
@@ -12755,7 +12755,7 @@
    "source": "design-arena",
    "metric": "design_arena_codecategories_win_rate",
    "score": 26.6,
-   "evaluatedAt": "2026-11-21T12:00:32.190Z",
+   "evaluatedAt": "2026-11-22T12:00:34.027Z",
    "version": "v1",
    "config": null
   }
