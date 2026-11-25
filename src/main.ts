@@ -482,7 +482,7 @@ function renderChart() {
       data: labelItems,
       symbolSize: 11,
       itemStyle: { borderColor: surface, borderWidth: 1 },
-      emphasis: { focus: 'self', label: { show: true }, itemStyle: { borderColor: text, borderWidth: 2 } },
+      emphasis: { focus: 'none', label: { show: true }, itemStyle: { borderColor: text, borderWidth: 2 } },
       // 名前の位置は placeLabels() が点ごとに決める（重なる場所には出さない）
       label: {
         show: false,
@@ -593,6 +593,8 @@ function renderChart() {
     },
     { notMerge: true },
   );
+  // クリック直後の描き直しでマウスを乗せた状態が残らないよう、強調を解いておく
+  chart.dispatchAction({ type: 'downplay', seriesIndex: series.map((_, i) => i) });
   placeLabels();
 }
 
